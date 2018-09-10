@@ -1,0 +1,44 @@
+//写代码可以在整型有序数组中查找想要的数字，找到了返回下标，找不到返回 - 1.（折半查找）
+#include < stdio.h >
+#include < stdlib.h>
+
+int binary_search(int arr[], int key, int line)
+{
+	int left = 0;
+	int right = line - 1;
+	while (left <= right)
+	{
+		int mid = left + (right - left) / 2;
+		if (arr[mid] == key)
+		{
+			return mid;
+		}
+		else if (arr[mid] > key)
+		{
+			right = mid - 1;
+		}
+		else
+		{
+			left = mid + 1;
+		}
+	}
+	if (left > right)
+		return -1;
+}
+
+int main()
+{
+	int arr[10] = { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20 };
+	int key = 100;
+	int line = sizeof (arr) / sizeof(arr[0]);
+	int ret = binary_search( arr,  key,  line);
+	if (ret ==-1)
+	{
+		printf("找不到\n");
+	}
+	else
+	{
+		printf("找到了：%d\n", ret);
+	}
+	system("pause");
+}
