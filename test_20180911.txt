@@ -1,0 +1,31 @@
+//写一个函数返回参数二进制中 1 的个数
+//比如： 15 0000 1111 4 个 1
+//程序原型：
+//int count_one_bits(unsigned int value)
+//{
+//	// 返回 1的位数 
+//}
+#define _CRT_SECURE_NO_WARNINGS 1
+#include <stdio.h>
+
+int count_one_bits(unsigned int value)
+{
+	int count = 0;
+	while (value)
+	{
+		count++;
+		value = value & (value - 1);
+	}
+	return count;
+}
+
+int main()
+{
+	int num = 0;
+	int ret = 0;
+	printf("input a number:\n");
+	scanf("%d", &num);
+	ret = count_one_bits(num);
+	printf("二进制中1的个数 = %d\n", ret);
+	system("pause");
+	return 0;
