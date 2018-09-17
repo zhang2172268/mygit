@@ -1,0 +1,49 @@
+//1.编写函数：
+//unsigned int reverse_bit(unsigned int value);
+//这个函数的返回 值value的二进制位模式从左到右翻转后的值。
+
+//如：
+//在32位机器上25这个值包含下列各位：
+//00000000000000000000000000011001
+//翻转后：（2550136832）
+//10011000000000000000000000000000
+//程序结果返回：
+//2550136832
+#define _CRT_SECURE_NO_WARNINGS 1
+#include <stdio.h>
+int reverse_bit(unsigned int value)
+{
+	unsigned int new_value = 0;
+	int i = 0;
+	for (i = 31; i >= 0; i++)
+	{
+		if ((value >> i) & 1 == 1)  //判断第一位是否为1
+		{
+			new_value = (new_value) | (1 << (31 - i));//将new_value的最后一位置1
+		}
+	}
+	return new_value;  
+}
+int main()
+{
+	unsigned int value = 0;
+	printf("please enter:");
+	scanf("%u", &value);
+	printf("%u", reverse_bit(value));
+	system("pause");
+	return 0;
+}
+
+
+
+//2.写一个宏可以将一个数字的奇数位和偶数位交换。
+#include<stdio.h>
+#define CHANGE(X)\
+	(((X&(0x55555555)) << 1) | ((X&(0xAAAAAAAA)) >> 1))
+int main()
+{
+	int x = 5;
+	printf("%d\n", CHANGE(x));   //5的二进制：0101  交换后得二进制：1010 其值为10
+	system("pause");
+	return 0;
+}
