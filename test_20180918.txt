@@ -1,0 +1,81 @@
+//1.有一个字符数组的内容为:"student a am i", 请你将数组的内容改为"i am a student".
+//要求：不能使用库函数。只能开辟有限个空间（空间个数和字符串的长度无关）。
+#include <stdio.h>
+#include <assert.h>
+
+int my_strlen(const char *str)
+{
+	assert(str);
+	int len = 0;
+	while (*str++)
+	{
+		len++;
+	}
+	return len;
+}
+void reverse(char *left, char *right)
+{
+	assert(left);
+	assert(right);
+	while (left < right)
+	{
+		char tmp = *left;
+		*left = *right;
+		*right = tmp;
+		left++;
+		right--;
+	}
+}
+void str_reverse(char *str)
+{
+	assert(str);
+	int len = my_strlen(str);
+	reverse(str, str + len - 1);
+	while (*str != '\0')
+	{
+		char *p = str;
+		while ((*str != ' ') && (*str != '\0'))
+		{
+			str++;
+		}
+		reverse(p, str - 1);
+		if (*str != '\0')
+		{
+			str++;
+		}
+	}
+}
+int main()
+{
+	char str[] = "student a am I";
+	str_reverse(str);
+	printf("%s\n", str);
+	system("pause");
+	return 0;
+}
+
+
+//2.编写一个代码，演示多个字符从两端移动向中间汇聚
+#include <stdio.h>
+#include <windows.h>
+
+int main()
+{
+    char arr1[] = "I am a student!";
+    char arr2[] = "###############";
+    int left = 0;
+    int right = strlen(arr1) - 1;
+    printf("%s\n", arr2);
+    //while循环实现
+    while (left <= right)
+    {
+        Sleep(1000);//让函数滞留1秒
+        arr2[left] = arr1[left];
+        arr2[right] = arr1[right];
+        left++;
+        right--;
+        printf("%s\n", arr2);
+    }
+    system("pause");
+    return 0;
+}
