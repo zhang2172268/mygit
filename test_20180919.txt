@@ -1,0 +1,76 @@
+//1.调整数组使奇数全部都位于偶数前面。
+//题目：输入一个整数数组，实现一个函数，来调整该数组中数字的顺序
+//使得数组中所有的奇数位于数组的前半部分，所有偶数位于数组的后半部分。
+#include <stdio.h>
+#include <stdlib.h>
+void sort(int *arr, int sz)
+{
+	int i = 0;
+	int j = sz - 1;
+	for (i = 0; i < j; i++)
+	{
+		if (arr[i] % 2 != 0) //判断是奇数
+			continue;        //结束单次循环
+		else                 //判断是偶数
+		{
+			int t = arr[i];//但前数与数组最后位置交换
+			arr[i] = arr[j];
+			arr[j] = t;
+			if (arr[j] % 2 == 0)//如果数组最后一位是偶数
+				j--;           //则进行最后一位向前移一位进行位置交换，依次循环
+			i--;
+		}
+
+	}
+}
+
+int main()
+{
+	int arr[] = { 1, 9, 5, 6, 4, 3, 1 };
+	int sz = sizeof(arr) / sizeof(arr[0]);
+	int i;
+	sort(arr, sz);
+	for (i = 0; i<sz; i++)
+	{
+		printf("%d ", arr[i]);
+	}
+	system("pause");
+	return 0;
+}
+
+
+//2.5位运动员参加了10米台跳水比赛，有人让他们预测比赛结果
+//A选手说：B第二，我第三；
+//B选手说：我第二，E第四；
+//C选手说：我第一，D第二；
+//D选手说：C最后，我第三；
+//E选手说：我第四，A第一；
+//比赛结束后，每位选手都说对了一半，请编程确定比赛的名次。
+#include<stdio.h>
+#include<stdlib.h>
+int main()
+{
+	int A = 0;
+	int B = 0;
+	int C = 0;
+	int D = 0;
+	int E = 0;
+	for (A = 1; A <= 5; A++)
+	for (B = 1; B <= 5; B++)
+	for (C = 1; C <= 5; C++)
+	for (D = 1; D <= 5; D++)
+	for (E = 1; E <= 5; E++)
+	{
+		
+		if (((B == 2) + (A == 3) == 1) &&
+			((B == 2) + (E == 4) == 1) &&
+			((C == 1) + (E == 2) == 1) &&
+			((C == 5) + (D == 3) == 1) &&
+			((E == 4) + (A == 1) == 1) == 1)
+		{
+			printf("A = %d B = %d C = %d D = %d E = %d \n", A, B, C, D, E);
+		}
+	}
+	system("pause");
+	return 0;
+}
