@@ -1,0 +1,198 @@
+//1.实现strcpy
+#include<stdio.h>
+#include<assert.h>
+
+char *my_strcpy(char *dest, const char *src)
+{
+	char *ret = dest;
+	assert(dest != NULL);
+	assert(src != NULL);
+	while (*dest++ = *src++)
+	{
+		;
+	}
+	return ret;
+}
+int main()
+{
+	char arr[20] = { 0 };
+	char *p = "abcde";
+	my_strcpy(arr, p);
+	printf("%s\n", arr);
+	system("pause");
+	return 0;
+}
+
+//2.实现strcat
+#include<stdio.h>
+#include<assert.h>
+
+char *my_strcat(char *dest, const char *src)
+{
+	char *ret = dest;
+	assert(dest != NULL);
+	assert(src != NULL);
+	while (*dest)
+	{
+		dest++;
+	}
+	while (*dest++ = *src++)
+	{
+		;
+	}
+	return ret;
+}
+int main()
+{
+	char arr1[20] = "hellow ";
+	char arr2[10] = "world!";
+	my_strcat(arr1, arr2);
+	printf("%s\n", arr1);
+	system("pause");
+	return 0;
+}
+
+//3.实现strstr
+#include<stdio.h>
+#include<assert.h>
+
+char *my_strstr(const char *str, const char *substr)
+{
+	assert(str);
+	assert(substr);
+	if (*substr == '\0')
+	{
+		return str;
+	}
+	while (*str)
+	{
+		const char *s1 = str;
+		const char *s2 = substr;
+		while (*s1 && *s2 && *s1 == *s2)
+		{
+			s1++;
+			s2++;
+		}
+		if (*s2 == '\0')
+		{
+			return str;
+		}
+		str++;
+	}
+	return NULL;
+}
+int main()
+{
+	char arr[] = "aabbcddf";
+	char *ret = my_strstr(arr, "bcd");
+	if (ret != NULL)
+	{
+		printf("%s\n", ret);
+	}
+	else
+	{
+		printf("不存在\n");
+	}
+	system("pause");
+	return 0;
+}
+4.实现strchr
+
+//5.实现strcmp
+#include<stdio.h>
+#include<assert.h>
+
+char *my_strcmp(const char *str1, const char *str2)
+{
+	assert(str1);
+	assert(str2);
+	while (*str1 == *str2)
+	{
+		if (*str1 == '\0')
+			return 0;
+		str1++;
+		str2++;
+	}
+	return *str1 - *str2;
+}
+int main()
+{
+	char *p = "abddhjkh";
+	char *q = "abdhtuir";
+	int ret = my_strcmp(p, q);
+	if (ret > 0)
+	{
+		printf("p > q\n");
+	}
+	else if (ret == 0)
+	{
+		printf("p = q\n");
+	}
+	else
+	{
+		printf("p < q\n");
+	}
+	system("pause");
+	return 0;
+}
+
+//6.实现memcpy
+#include<stdio.h>
+#include<assert.h>
+
+void *my_memmove(void *dest, const void *src, size_t count)
+{
+	void *ret = dest;
+	assert(dest);
+	assert(src);
+	while (count--)
+	{
+		*(char *)dest = *(char *)src;
+		dest = (char *)dest + 1;
+		src = (char *)src + 1;
+	}
+	return ret;
+}
+int main()
+{
+	int arr1[20] = { 0 };
+	int arr2[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
+	my_memmove(arr1, arr2, 16);
+	system("pause");
+	return 0;
+}
+
+//7.实现memmove
+#include<stdio.h>
+#include<assert.h>
+
+void *my_memmove(void *dest, const void *src, size_t count)
+{
+	void *ret = dest;
+	assert(dest);
+	assert(src);
+	if (dest < src)
+	{   //前-->后
+		while (count--)
+		{
+			*(char *)dest = *(char *)src;
+			dest = (char *)dest + 1;
+			src = (char *)src + 1;
+		}
+	}
+	else
+	{   //后-->前
+		while (count--)
+		{
+			*((char *)dest + count) = *((char *)src + count);
+		}
+	}
+	return ret;
+}
+int main()
+{
+	int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
+	my_memmove(arr + 2, arr, 16);
+	system("pause");
+	return 0;
+}
