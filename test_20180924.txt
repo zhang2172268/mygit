@@ -1,0 +1,68 @@
+//1.递归和非递归分别实现求第n个斐波那契数。
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<stdio.h>
+
+//递归
+int fib(int n)
+{
+	if (n <= 2)
+		return 1;
+	else
+		return fib(n - 1) + fib(n - 2);
+}
+
+////非递归
+//int fib(int n)
+//{
+//	int a = 1;
+//	int b = 1;
+//	int c = a;
+//	while (n > 2)
+//	{
+//		c = a + b;
+//		a = b;
+//		b = c;
+//		n--;
+//	}
+//	return c;
+//}
+int main()
+{
+	int n = 0;
+	scanf("%d", &n);
+	int ret = fib(n);
+	printf("%d\n", ret);
+	system("pause");
+	return 0;
+}
+
+//2.编写一个函数实现n^k，使用递归实现
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<stdio.h>
+//递归
+int power_reverse(int n, int k)
+{
+	if (k == 1)
+		return n;
+	else
+		return power_reverse(n, k - 1) * n;
+}
+////非递归
+//int power_reverse(int n, int k)
+//{
+//	int ret = 1;
+//	for (int i = 1; i <= k; i++)
+//	{
+//		ret *= n;
+//	}
+//	return ret;
+//}
+int main()
+{
+	int n = 0;
+	int k = 0;
+	scanf("%d %d", &n, &k);
+	printf("%d\n", power_reverse(n, k));
+	system("pause");
+	return 0;
+} 
