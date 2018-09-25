@@ -1,0 +1,77 @@
+//1. 写一个递归函数DigitSum(n)，输入一个非负整数，返回组成它的数字之和，
+//例如，调用DigitSum(1729)，则应该返回1 + 7 + 2 + 9，它的和是19
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<stdio.h>
+
+int DigitSum(int num)
+{
+	if (num < 10)
+		return num;
+	else
+		return num % 10 + DigitSum(num / 10);
+}
+int main()
+{
+	int n = 0;
+	scanf("%d", &n);
+	printf("%d\n", DigitSum(n));
+	system("pause");
+	return 0;
+}
+
+//2. 编写一个函数reverse_string(char * string)（递归实现）
+//实现：将参数字符串中的字符反向排列。
+//要求：不能使用C函数库中的字符串操作函数。
+#include<stdio.h>
+
+void reverse(char *str)
+{
+	if (*str == '\0')
+		return;
+	else
+	{
+		char t = *str;
+		int len = strlen(str) - 1;
+		*str = str[len];
+		str[len] = 0;
+		reverse(str + 1);
+		str[len] = t;
+	}
+}
+
+int main()
+{
+	char buf[] = "abc";
+	reverse(buf);
+	printf("buf = %s\n", buf);
+	system("pause");
+	return 0;
+}
+
+
+
+
+//3.递归方式实现打印一个整数的每一位
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<stdio.h>
+
+//递归
+int printff(int n)
+{
+	if (n < 10)
+		printf(" %d", n);
+	else
+	{
+		printff(n / 10);
+		printf(" %d", n % 10);
+	}
+}
+int main()
+{
+	int n = 0;
+	scanf("%d", &n);
+	printff(n);
+	printf("\n");
+	system("pause");
+	return 0;
+}
