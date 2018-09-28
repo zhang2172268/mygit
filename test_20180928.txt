@@ -1,0 +1,51 @@
+//模拟实现printf函数，可完成下面的功能
+//能完成下面函数的调用。 
+//print("s ccc d.\n","hello",'b','i','t'，100); 
+//函数原型： 
+//print(char *format, ...) 
+#include<stdio.h>
+#include<stdarg.h>
+
+void Decimal(int num)
+{
+	if (num / 10 == 0)
+		putchar(num % 10 + '0');
+	else {
+		Decimal(num / 10);
+		putchar(num % 10 + '0');
+	}
+}
+void print(const char *fmt, ...)
+{
+	int i = 0;
+	va_list arg;
+	va_start(arg, fmt);
+	for (i = 0; fmt[i] != '\0'; i++) {
+		if (fmt[i] != '%')
+			putchar(fmt[i]);
+		else {
+			i++;
+			switch (fmt[i]) {
+			case 'c':
+				putchar(va_arg(arg, int)); break;
+			case 'd': {
+						  int r = va_arg(arg, int); Decimal(r); }break;
+			case 's':{
+						 char *r = va_arg(arg, char*);
+						 for (int i = 0; r[i] != '\0'; i++)	putchar(r[i]);
+			}
+						  break;
+			case '%':
+				putchar('%');
+				break;
+			}
+
+		}
+	}
+}
+int main()
+{
+	print("s ccc d.\n", "hello", 'b', 'i', 't', 100);
+	system("pause");
+	return 0;
+}
