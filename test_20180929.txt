@@ -1,0 +1,64 @@
+//1.一个数组中只有两个数字是出现一次，其他所有数字都出现了两次。
+//找出这两个数字，编程实现。
+#include<stdio.h>
+
+int Twice(int arr[], int len)
+{
+	int cnt = 0;
+	for (int i = 0; i < len; i++)
+	{
+		cnt = 0;
+		for (int j = 0; j < len; j++)
+		{
+			if (arr[i] == arr[j])
+				cnt++;
+		}
+		if (cnt == 1)
+		{
+			printf("%d \n", arr[i]);
+		}
+	}
+}
+int main()
+{
+	int arr[] = { 6, 9, 3, 1, 5, 9, 3, 6 };
+	int len = sizeof(arr) / sizeof(arr[0]);
+	int ret = Twice(arr, len);
+	system("pause");
+	return 0;
+}
+
+//2.喝汽水，1瓶汽水1元，2个空瓶可以换一瓶汽水，给20元，可以多少汽水。编程实现。
+#include<stdio.h>
+
+//int main()
+//{
+//	int kps = 0;
+//	int total = 20;
+//	int xy = 0;
+//	kps = 20;
+//	while (kps >= 1)
+//	{
+//		kps = kps + xy;
+//		total += kps / 2;
+//		xy = kps % 2;
+//		kps = kps / 2;
+//	}
+//	printf("total = %d\n", total);
+//	system("pause");
+//	return 0;
+//}
+//递归实现
+int Soda(int money)
+{
+	if (money == 1)
+		return 1;
+	else
+		return Soda(money - 1) + 2;
+}
+int main()
+{
+	printf("%d\n", Soda(20));
+	system("pause");
+	return 0;
+}
