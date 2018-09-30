@@ -1,0 +1,95 @@
+//1.模拟实现strncpy
+#include <stdio.h>
+#include <assert.h>
+#include <string.h>
+
+char *my_strncpy(char *dest, const char *src, int count)
+{
+	char *ret = dest;
+	assert(dest != NULL);
+	assert(src != NULL);
+	while (count--)
+	{
+		*dest++ = *src++;
+	}
+	*dest = '\0';
+	return ret;
+}
+int main()
+{
+	char str[20] = { 0 };
+	char *p = "hello";
+	my_strncpy(str, p, 4);
+	printf("str = %s\n", str);
+	system("pause");
+	return 0;
+}
+
+//2.模拟实现strncat
+#include<stdio.h>
+#include<assert.h>
+
+char *my_strncat(char *dest, const char *src, int count)
+{
+	char *ret = dest;
+	assert(dest != NULL);
+	assert(src != NULL);
+	while (*dest)
+	{
+		dest++;
+	}
+	while (count--)
+	{
+		*dest++ = *src++;
+	}
+	*dest = '\0';
+	return ret;
+}
+int main()
+{
+	char arr1[20] = "hellow ";
+	char arr2[10] = "world!";
+	my_strncat(arr1, arr2, 4);
+	printf("%s\n", arr1);
+	system("pause");
+	return 0;
+}
+
+//3.模拟实现strncmp
+#include<stdio.h>
+#include<assert.h>
+
+char *my_strncmp(const char *str1, const char *str2, int count)
+{
+	assert(str1);
+	assert(str2);
+	while (count && (*str1 == *str2))
+	{
+		if (*str1 == '\0')
+			return 0;
+		str1++;
+		str2++; 
+		count--;
+	}
+	return *str1 - *str2;
+}
+int main()
+{
+	char *p = "abddhjkh";
+	char *q = "abdhtuir";
+	int ret = my_strncmp(p, q, 10);
+	if (ret > 0)
+	{
+		printf("p > q\n");
+	}
+	else if (ret == 0)
+	{
+		printf("p = q\n");
+	}
+	else
+	{
+		printf("p < q\n");
+	}
+	system("pause");
+	return 0;
+}
