@@ -1,0 +1,98 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define N 8
+
+char board[N + 2][N + 2];
+int counter = 0;
+
+// 初始化 
+void init(void)
+{
+	// 初始化边界 
+	for (int row = 0; row < N + 2; row++) {
+		for (int col = 0; col < N + 2; col++) {
+			board[0][col] = '#';
+			board[N + 1][col] = '#';
+			board[row][0] = '#';
+			board[row][N + 1] = '#';
+		}
+	}
+
+	// 初始化棋盘的内部 
+	for (int i = 1; i <= N; i++) {
+		for (int j = 1; j <= N; j++) {
+			board[i][j] = ' ';
+		}
+	}
+}
+
+// 显示棋盘
+void show(void)
+{
+	for (int i = 0; i<N + 2; i++) {
+		for (int j = 0; j<N + 2; j++) {
+			printf("%c ", board[i][j]);
+		}
+		printf("\n");
+	}
+}
+
+// 相对于当前位置的偏移量 
+struct Pos {
+	int yos; // 行的偏移量
+	int xos; // 列的偏移量
+};
+
+struct Pos pos[3] = {
+	{ -1, -1 },
+	{ -1, 0 },
+	{ -1, 1 }
+};
+
+// 测试row行col列是否可以摆放皇后 
+int check(int row, int col)
+{
+	int nr, nc;
+	int ret = 1;
+	for (int i = 0; i<3 && ret; i++) {
+		nr = row;
+		nc = col;
+		while (ret && board[nr][nc] != '#') {
+			if (board[nr][nc] == '*') {
+				ret = 0;
+				break;
+			}
+			nr = nr + pos[i].yos;
+			nc = nc + pos[i].xos;
+		}
+	}
+
+	return ret;
+}
+
+// 找到合适位置摆放皇后 
+// row : 当前摆放的行数 
+// 回溯算法 
+void find(int row) {
+	if (row > N) {
+		show();
+	}
+	else {
+		for (int col = 1; col <= N; col++) {
+			if (check(row, col)) {
+				board[row][col] = '*';
+				find(row + 1);
+				board[row][col] = ' ';
+			}
+		}
+	}
+}
+
+int main(int argc, char *argv[])
+{
+	init();
+	find(1);
+	system("pause");
+	return 0;
+}
