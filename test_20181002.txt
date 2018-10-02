@@ -1,0 +1,64 @@
+#define _CRT_SECURE_NO_WARNINGS 1
+#include <stdio.h>
+#include <stdlib.h>
+
+int months[2][13] = {
+	{ 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 },
+	{ 0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }
+};
+
+int isLeap(int year)
+{
+	return year % 4 == 0 && year % 100 != 0 || year % 400 == 0;
+}
+
+int first_day_of_year(int year)
+{
+	int base_year = 2000;
+	int base_first_day = 6;
+	int total = 0;
+	for (int i = base_year; i<year; i++) {
+		total += 365 + isLeap(i);
+	}
+
+	return (total + base_first_day) % 7;
+}
+
+int first_day_of_month(int year, int month, int first_year)
+{
+	int total = 0;
+
+	for (int i = 1; i<month; i++) {
+		total += months[isLeap(year)][i];
+	}
+	total += first_year;
+
+	return total % 7;
+}
+
+void show(int year, int month, int first)
+{
+	printf("Sun Mon Tue Wed The Fri Sat\n");
+	printf("---------------------------\n");
+	for (int i = 0; i<first; i++)
+		printf("    ");
+	for (int i = 1; i <= months[isLeap(year)][month]; i++) {
+		printf("%3d ", i);
+		if ((i + first) % 7 == 0)
+			printf("\n");
+	}
+}
+
+int main(int argc, char *argv[])
+{
+	int year, month;
+	printf("year/month: ");
+	scanf("%d/%d", &year, &month);
+
+	int first_year = first_day_of_year(year);
+	int first_month = first_day_of_month(year, month, first_year);
+	show(year, month, first_month);
+
+	system("pause");
+	return 0;
+}
