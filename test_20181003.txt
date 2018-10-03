@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <Windows.h>
+
+#define N 10
+
+int arr[N][N] = {0};
+
+void show(void)
+{
+	for (int i = 0; i<N; i++) {
+		for (int j = 0; j<N; j++) {
+			printf("%3d ", arr[i][j]);
+		}
+		printf("\n");
+	}
+	printf("\n");
+}
+
+int main(int argc, char *argv[])
+{
+	int circle = (N + 1) / 2;
+	int i, j;
+	int num = 1;
+	for (int k = 0, i = 0, j = 0; k<circle; k++) {
+		while (j < N - k) { arr[i][j] = num++; j++; }
+		j--;
+		i++;
+		while (i < N - k) { arr[i][j] = num++; i++; }
+		i--;
+		j--;
+		while (j >= k) { arr[i][j] = num++; j--; }
+		j++;
+		i--;
+		while (i > k) { arr[i][j] = num++; i--; }
+		i++;
+		j++;
+	}
+	show();
+
+	system("pause");
+	return 0;
+}
