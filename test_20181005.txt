@@ -1,0 +1,402 @@
+//SList.h
+#ifndef __SList__H__
+#define __SList__H__
+#include<stdlib.h>
+#include<stdio.h>
+#include<assert.h>
+
+typedef int DataType;
+
+typedef struct SList
+{
+	DataType data;
+	struct SList *pNext;
+}SList;
+
+//初始化
+void Init(SList **ppHead)
+{
+	*ppHead = NULL;
+}
+
+//打印
+void print(SList *pHead)
+{
+	SList *pNode;
+	for (pNode = pHead; pNode != NULL; pNode = pNode->pNext)
+	{
+		printf("%2d->", pNode->data);
+	}
+	printf(" NULL\n");
+}
+
+//创建新结点
+static SList *BuyNewNode(DataType data)
+{
+	SList *pNewNode = (SList *)malloc(sizeof(SList));
+	assert(pNewNode);
+	pNewNode->data = data;
+	pNewNode->pNext = NULL;
+
+	return pNewNode;
+}
+
+//插入
+/*
+	1.要有空间
+	2.把数据装进去
+	3.把空间结点链接上去
+		1)把t链子拆开
+			找到拆的地方
+		2)把上半段的next连到新结点上
+		3)把新结点的next连到原来的下半段
+
+*/
+
+//尾插
+void PushBack(SList **ppHead, DataType data)
+{
+	//链表为空
+	SList *pNewNode = BuyNewNode(data);
+
+	if (*ppHead == NULL){
+		*ppHead = pNewNode;	
+		return;
+	}
+
+	//正常情况
+	//找到倒数第一个
+	SList *pNode = *ppHead; 
+	while (pNode->pNext != NULL){
+		pNode = pNode->pNext;
+	}
+
+	pNewNode->pNext = pNode->pNext;
+	pNode->pNext = pNewNode;
+}
+
+//头插
+void PushFront(SList **ppHead, DataType data)
+{
+	SList *pNewNode = BuyNewNode(data);
+
+	pNewNode->pNext = *ppHead;
+	*ppHead = pNewNode;
+}
+
+//删除
+/*
+	1.拆链子
+		找对地方
+	2.把空间free
+	3.把上半段直接连到下半段
+*/
+
+//尾删
+void PopBack(SList **ppHead)
+{	//链表为空
+	if (*ppHead == NULL){
+		printf("链表已空！\n");
+		return;
+	}
+	//只有一个结点
+	if ((*ppHead)->pNext == NULL){
+		free(*ppHead);
+		*ppHead = NULL;
+		return;
+	}
+	//两个以上结点
+	//找倒数第二个结点
+	SList *pNode, *pNext;
+	pNode = *ppHead;
+	while (pNode->pNext->pNext != NULL){
+		pNode = pNode->pNext;
+	}
+	pNext = pNode->pNext;
+	//pNode->pNext = pNext->pNext;
+	pNode->pNext = NULL;
+	free(pNext);
+}
+
+//头删
+void PopFront(SList **ppHead)
+{	//链表为空
+	if (*ppHead == NULL){
+		printf("链表已空！\n");
+		return;
+	}
+	//正常情况
+	SList *pHead = *ppHead;
+	SList *pNext = pHead->pNext;
+	free(pHead);
+	//pHead = NULL;错误
+	*ppHead = pNext;
+}
+
+//在指定位置之前插入一个值
+void Insert(SList **ppHead, SList *pPosNode, DataType data)
+{
+	//1.找拆链子
+	//2.Buy结点
+	//3.把新结点挂在链子上
+	//pPosNode一定在链子里面
+
+	/*if (*ppHead == NULL && pPosNode == NULL){
+		*ppHead = BuyNewNode(data);
+		return;
+	}*/
+
+	if (*ppHead == pPosNode){
+		PushFront(&ppHead, data);
+		return;
+	}
+	//正常情况
+	SList *pNode; 
+	//结束后 pNode 就是 pPosNodede 前一个
+	for (pNode = *ppHead; pNode->pNext != pPosNode; pNode = pNode->pNext){
+	}
+	SList *pNewNode = BuyNewNode(data);
+	pNewNode->pNext = pPosNode;
+	pNode->pNext = pNewNode;
+}
+
+//指定位置删除 
+void Erase(SList **ppHead, SList *pPosNode)
+{
+	if (*ppHead == pPosNode){
+		PopFront(ppHead);
+		return;
+	}
+	SList *pNode;
+	//结束后 pNode 就是 pPosNodede 前一个
+	for (pNode = *ppHead; pNode->pNext != pPosNode; pNode = pNode->pNext){
+	}
+	pNode->pNext = pPosNode->pNext;
+	free(pPosNode);
+}
+
+//查找
+//如果找到就返回装数据的结点指针
+//如果没找到就返回NULL
+SList *Find(SList *pHead, DataType data)
+{
+	SList *pNode;
+	for (pNode = pHead; pNode != NULL; pNode = pNode->pNext){
+		if (pNode->data == data){
+			return pNode;
+		}
+	}
+	return NULL;
+}
+
+//链表有多个相同元素，删第一个
+void Remove(SList **ppHead, DataType data)
+{
+	SList *pPosNode = Find(*ppHead, data);
+	if (pPosNode != NULL){
+		Erase(ppHead, pPosNode);
+	}
+}
+
+//链表中有多个相同元素，全部删去(一次遍历删完）
+void RemoveAll(SList **ppHead, DataType data)
+{
+	SList *pNode = *ppHead;
+	SList *pDel;
+	while (pNode->pNext != NULL){
+		if (pNode->pNext->data == data){
+			pDel = pNode->pNext;
+			pNode->pNext = pDel->pNext;
+			free(pDel);
+		}
+		else{
+			pNode = pNode->pNext;
+		}
+	}
+	if ((*ppHead)->data == data){
+		PopFront(ppHead);
+	}
+}
+
+//计算链表长度
+int Size(SList *pHead)
+{
+	int size  = 0;
+	SList *pNode;
+	for (pNode = pHead; pNode != NULL; pNode = pNode->pNext){
+		size++;
+	}
+	return size;
+}
+
+//void EraseNotTailNode(pNode pos);
+//int GetListLength(pList plist);
+
+
+//销毁链表
+/*
+	1.遍历链表（每一个）
+	2.把空间释放掉 free
+*/
+void Destroy(SList **ppHead)
+{
+	SList *pNode, *pNext;
+	for (pNode = *ppHead; pNode != NULL; pNode = pNext){
+		pNext = pNode->pNext;
+		free(pNode);
+	}
+	*ppHead = NULL;
+}
+
+//test.c
+#include"SList.h"
+
+void TestSListPushBack()
+{
+	SList *pHead;
+	Init(&pHead);
+	PushBack(&pHead, 1);
+	PushBack(&pHead, 2);
+	PushBack(&pHead, 3);
+	PushBack(&pHead, 4);
+	print(pHead);
+	Destroy(&pHead);
+}
+
+void TestSListPushFront()
+{
+	SList *pHead;
+	Init(&pHead);
+	PushFront(&pHead, 101);
+	PushFront(&pHead, 102);
+	PushFront(&pHead, 103);
+	PushFront(&pHead, 104);
+	print(pHead);
+	Destroy(&pHead);
+}
+
+void TestSListPopBack()
+{
+	SList *pHead;
+	Init(&pHead);
+	PushBack(&pHead, 1);
+	PushBack(&pHead, 2);
+	PushBack(&pHead, 3);
+	PushBack(&pHead, 4);
+	print(pHead);
+	PopBack(&pHead);
+	print(pHead);
+	PopBack(&pHead);
+	print(pHead);
+	PopBack(&pHead);
+	print(pHead);
+	PopBack(&pHead);
+	print(pHead);
+	PopBack(&pHead);
+	print(pHead);
+	PopBack(&pHead);
+	print(pHead);
+	Destroy(&pHead);
+}
+
+void TestSListPopFront()
+{
+	SList *pHead;
+	Init(&pHead);
+	PushBack(&pHead, 1);
+	PushBack(&pHead, 2);
+	PushBack(&pHead, 3);
+	PushBack(&pHead, 4);
+	print(pHead);
+	PopFront(&pHead);
+	print(pHead);
+	PopFront(&pHead);
+	print(pHead);
+	PopFront(&pHead);
+	print(pHead);
+	PopFront(&pHead);
+	print(pHead);
+	PopFront(&pHead);
+	print(pHead);
+	Destroy(&pHead);
+}
+
+TestSListFindInsert()
+{
+	SList *pHead;
+	Init(&pHead);
+	PushBack(&pHead, 1);
+	PushBack(&pHead, 2);
+	PushBack(&pHead, 3);
+	PushBack(&pHead, 4);
+	print(pHead);
+	SList *pPos = Find(pHead, 3);
+	Insert(&pHead, pPos, 9);
+	pPos = Find(pHead, 3);
+	Insert(&pHead, pPos, 1);
+	print(pHead);
+	Destroy(&pHead);
+}
+
+void TestSListErase()
+{
+	SList *pHead;
+	Init(&pHead);
+	PushBack(&pHead, 1);
+	PushBack(&pHead, 2);
+	PushBack(&pHead, 3);
+	PushBack(&pHead, 4);
+	print(pHead);
+	SList *pPos = Find(pHead, 3);
+	Insert(&pHead, pPos, 9);
+	pPos = Find(pHead, 3);
+	Insert(&pHead, pPos, 1);
+	print(pHead);
+	pPos = Find(pHead, 3);
+	Erase(&pHead, pPos);
+	print(pHead);
+	Destroy(&pHead);
+}
+
+void TestSListRemoveRemoveAll()
+{
+	SList *pHead;
+	Init(&pHead);
+	PushBack(&pHead, 1);
+	PushBack(&pHead, 2);
+	PushBack(&pHead, 1);
+	PushBack(&pHead, 1);
+	print(pHead);
+	Remove(&pHead, 1);
+	print(pHead);
+	RemoveAll(&pHead, 1);
+	print(pHead);
+	Destroy(&pHead);
+}
+
+void TestSListSize()
+{
+	SList *pHead;
+	Init(&pHead);
+	PushBack(&pHead, 1);
+	PushBack(&pHead, 2);
+	PushBack(&pHead, 3);
+	PushBack(&pHead, 4);
+	print(pHead);
+	printf("%d\n", Size(pHead));
+	Destroy(&pHead);
+}
+
+int main()
+{
+	//TestSListPushBack();
+	//TestSListPushFront();
+	//TestSListPopBack();
+	//TestSListPopFront();
+	//TestSListFindInsert();
+	//TestSListErase();
+	//TestSListRemoveRemoveAll();
+	//TestSListSize();
+	system("pause");
+	return 0;
+}
