@@ -1,0 +1,50 @@
+//1.从头到尾打印单链表 
+
+//递归法
+void ReversePrintDG(SList *pFirst)
+{
+    if (pFirst == NULL){
+        printf("NULL <-");
+        return;
+    }
+    ReversePrintDG(pFirst->pNext);
+    printf("%2d <-", pFirst->data);
+}
+//循环
+void ReversePrintLoop(SList *pFirst)
+{
+    SList *pEnd = NULL;
+    SList *pNode = pFirst;
+    while (pEnd != pFirst){
+        pNode = pFirst;
+        while (pNode->pNext != pEnd){
+            pNode = pNode->pNext;
+        }
+        printf("%2d <-", pNode->data);
+        pEnd = pNode;
+    }
+    printf("\n");
+}
+
+
+
+//2.逆置链表 
+
+void ReverseLoop(SList **ppFirst)
+{
+    assert(ppFirst);
+    if ((*ppFirst) == NULL){
+        return ;
+    }
+    SList *p1 = NULL, *p2 = *ppFirst, *p3 = p2->pNext;
+    while (p2 != NULL){
+        p2->pNext = p1;
+        p1 = p2;
+        p2 = p3;
+        if (p3 != NULL){
+            p3 = p3->pNext;
+        }
+    }
+    *ppFirst = p1;
+}
+
