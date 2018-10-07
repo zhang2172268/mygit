@@ -1,0 +1,26 @@
+//1.删除一个无头单链表的非尾节点（不能遍历链表） 
+//pPos 不是尾结点
+void RemoveNoFirstNode(SList *pPos)
+{
+	assert(pPos != NULL);
+	assert(pPos->pNext != NULL);
+	SList *pNext = pPos->pNext;
+	pPos->data = pNext->data;
+	pPos->pNext = pNext->pNext;
+	free(pNext);
+}
+
+//2.在无头单链表的一个节点前插入一个节点（不能遍历链表） 
+void InsertNoFirstNode(SList **ppPos, DataType data)
+{
+	assert(ppPos != NULL);
+	if (*ppPos == NULL){
+		PushFront(ppPos, data);
+		return;
+	}
+	SList *pPos = *ppPos;
+	SList *pNode = BuyNewNode(pPos->data);
+	pPos->data = data;
+	pNode->pNext = pPos->pNext;
+	pPos->pNext = pNode;
+}
