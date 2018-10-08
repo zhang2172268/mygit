@@ -1,0 +1,33 @@
+//单链表实现约瑟夫环(JosephCircle) 
+SList *JosephCircle(SList *pFirst, int k)
+{
+	//把无循环构成有循环
+	SList *pNode; 
+	for (pNode = pFirst; pNode->pNext != NULL; pNode = pNode->pNext){
+
+	}
+	pNode->pNext = pFirst;
+	SList *pCurrent = pFirst;
+	SList *pPrev = NULL;
+	int n;
+	while (pCurrent->pNext != pCurrent){ //1.只剩一个
+		n = k;
+		while (--n > 0){  //2.虽然要杀是循环K次，但是要更改链表，要找前一个，所以K-1
+			pPrev = pCurrent;//需要保存前一个
+			pCurrent = pCurrent->pNext;
+		}
+		//3.kill
+		pPrev->pNext = pCurrent->pNext;
+		free(pCurrent);
+		//4.指向原来的下下个，但现在的下一个
+		pCurrent = pPrev->pNext;
+	}
+	return pCurrent;
+}
+
+void Swap(DataType *a, DataType *b)
+{
+	DataType tmp = *a;
+	*a = *b;
+	*b = tmp;
+}
