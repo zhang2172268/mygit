@@ -1,0 +1,36 @@
+//Ã°ÅÝÅÅÐò
+SList *BubbleSort(SList *pFirst)
+{
+	if (pFirst == NULL){
+		return NULL;
+	}
+	SList *pEnd = NULL;
+	SList *pOp1 = pFirst;
+	SList *pOp2 = pFirst->pNext;
+	int isChange = 0;
+	while (pEnd != pFirst->pNext){
+		isChange = 0;
+		pOp1 = pFirst;
+	    pOp2 = pFirst->pNext;
+		while (pOp2 != pEnd){
+			if (pOp1->data > pOp2->data){
+				Swap(&(pOp1->data), &(pOp2->data));
+				isChange = 1;
+			}
+			pOp1 = pOp1->pNext;
+			pOp2 = pOp2->pNext;
+		}
+		if (isChange == 0){
+			break;
+		}
+		pEnd = pOp1;
+	}
+	return pFirst;
+}
+
+void Swap(DataType *a, DataType *b)
+{
+	DataType tmp = *a;
+	*a = *b;
+	*b = tmp;
+}
