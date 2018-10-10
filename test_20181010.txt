@@ -1,0 +1,29 @@
+//合并两个有序链表,合并后依然有序
+SList *MergeSortedList(SList *pOneFirst, SList *pTwoFirst)
+{
+	SList *pOneNode = pOneFirst, *pTwoNode = pTwoFirst;
+	SList *pRemain = pOneNode;
+	SList *pResult, *pNode;
+
+	Init(&pResult);
+	while (pOneNode != NULL && pTwoNode != NULL){
+		if (pOneNode->data < pTwoNode->data){
+			PushBack(&pResult, pOneNode->data);
+			pOneNode = pOneNode->pNext;
+		}
+		else{
+			PushBack(&pResult, pTwoNode->data);
+			pTwoNode = pTwoNode->pNext;
+		}
+	}
+	if (pOneNode == NULL){
+		pRemain = pTwoNode;
+	}
+	else{
+		pRemain = pOneNode;
+	}
+	for (pNode = pRemain; pNode != NULL; pNode = pNode->pNext){
+		PushBack(&pResult, pNode->data);
+	}
+	return pResult;
+}
