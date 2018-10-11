@@ -1,0 +1,22 @@
+//求两个已排序单链表中相同的数据
+SList *UnionSet(SList *pOneFirst, SList *pTwoFirst)
+{
+	SList *pOneNode = pOneFirst, *pTwoNode = pTwoFirst;
+	SList *pResult;
+
+	Init(&pResult);
+	while (pOneNode != NULL && pTwoNode != NULL){
+		if (pOneNode->data < pTwoNode->data){
+			pOneNode = pOneNode->pNext;
+		}
+		else if (pOneNode->data > pTwoNode->data){
+			pTwoNode = pTwoNode->pNext;
+		}
+		else if(pOneNode->data = pTwoNode->data){
+			PushBack(&pResult, pOneNode->data);
+			pOneNode = pOneNode->pNext;
+			pTwoNode = pTwoNode->pNext;
+		}
+	}
+	return pResult;
+}
