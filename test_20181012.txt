@@ -1,0 +1,27 @@
+//1.查找单链表的中间节点，要求只能遍历一次链表 
+SList *FindMiddle(SList *pFirst)
+{
+	SList *pFast = pFirst;
+	SList *pSlow = pFirst;
+	while (pFirst != NULL && pFirst->pNext != NULL && pFirst->pNext->pNext){
+		pSlow = pSlow->pNext;
+		pFirst = pFirst->pNext->pNext;
+	}
+	return pSlow;
+}
+
+//2.查找单链表的倒数第k个节点，要求只能遍历一次链表
+SList *FindDSK(SList *pFirst, int k)
+{
+	SList *pFront = pFirst;
+	SList *pBack = pFirst;
+	int i;
+	for (i = 0; i < k-1; i++){
+		pFront = pFront->pNext;
+	}
+	while (pFront->pNext != NULL){
+		pFront = pFront->pNext;
+		pBack = pBack->pNext;
+	}
+	return pBack;
+}
