@@ -1,0 +1,72 @@
+//判断两个链表是否相交，若相交，求交点（假设链表不带环)
+
+//判断相交
+int HasCross(SList *pOneFirst, SList *pTwoFirst)
+{
+	if (pOneFirst == NULL || pTwoFirst == NULL){
+		return 0;
+	}
+	SList *pOne = pOneFirst;
+	SList *pTwo = pTwoFirst;
+	for (; pOne->pNext != NULL; pOne = pOne->pNext){
+
+	}
+	for (; pTwo->pNext != NULL; pTwo = pTwo->pNext){
+
+	}
+	if (pOne == pTwo){
+		return 1;
+	}
+	else
+		return 0;
+}
+
+//计算长度
+static int __GetListLength(SList *pFirst)
+{
+	SList *pNode;
+	int r = 0;
+	for (pNode = pFirst; pNode != NULL; pNode = pNode->pNext){
+		r++;
+	}
+	return r;
+}
+
+//相交前两段链表的长度差
+static int __GetDiff(int lengthOne, int lengthTwo)
+{
+	int diff;
+	if (lengthOne > lengthTwo){
+		diff = lengthOne - lengthTwo;
+	}
+	else{
+		diff =  lengthTwo -lengthOne;
+	}
+	return diff;
+}
+
+//返回交点
+static SList *GetCrossPoint(SList *pOneFirst, SList *pTwoFirst)
+{
+	int lengthOne = __GetListLength(pOneFirst);
+	int lengthTwo = __GetListLength(pTwoFirst);
+	SList *pShortFirst = pOneFirst;
+	SList *pLongFirst = pTwoFirst;
+	int i;
+	int diff = __GetDiff(lengthOne, lengthTwo);
+	SList *pLong, *pShort;
+	if (lengthOne > lengthTwo){
+		SList *pShortFirst = pTwoFirst;
+		SList *pLongFirst = pOneFirst;
+	}
+	pLong = pLongFirst;
+	pShort = pShortFirst;
+	for (i = 0; i < diff-1; i++){
+		pLong = pLong->pNext;
+	}
+	while (pLong != pShort){
+		pLong = pLong->pNext;
+		pShort = pShort->pNext;
+	}
+	return pLong;
+}
