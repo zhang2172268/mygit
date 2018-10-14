@@ -1,0 +1,120 @@
+/************************************/
+//Stack.h
+
+#define MAXSIZE 10
+
+typedef int SDataType;
+
+typedef struct Stack
+{
+	SDataType _array[MAXSIZE];
+	int _top;   //标记栈顶元素
+}Stack;
+
+//初始化
+void StackInit(Stack *ps);
+
+//压栈
+void StackPush(Stack *ps, SDataType data);
+
+//出栈
+void StackPop(Stack *ps);
+
+//返回栈顶元素
+SDataType StackTop(Stack *ps);
+
+//返回栈空间长度
+int StackSize(Stack *ps);
+
+//栈是否为空
+int StackEmpty(Stack *ps);
+
+/****************************************/
+//Stack.c
+#include <assert.h>
+#include <stdio.h>
+#include <string.h>
+
+
+//初始化
+void StackInit(Stack *ps)
+{
+	assert(ps);
+	ps->_top = 0;
+}
+
+//压栈
+void StackPush(Stack *ps, SDataType data)
+{
+	assert(ps);
+	if (MAXSIZE == ps->_top)
+	{
+		printf("栈空间已满，无法插入！！！\N");
+		return;
+	}
+	ps->_array[ps->_top++] = data;
+}
+
+//出栈
+void StackPop(Stack *ps)
+{
+	assert(ps);
+	if (StackEmpty(ps))
+		return;
+	ps->_top--;
+}
+
+//返回栈顶元素
+SDataType StackTop(Stack *ps)
+{
+	assert(ps);
+	return ps->_array[ps->_top - 1];
+}
+
+//返回栈空间长度
+int StackSize(Stack *ps)
+{
+	assert(ps);
+	return ps->_top;
+}
+
+//栈是否为空
+int StackEmpty(Stack *ps)
+{
+	assert(ps);
+	return 0 == ps->_top;
+}
+
+
+/****************************************/
+//test.c
+#include "Stack.h"
+
+
+void TestStack()
+{
+	Stack s;
+	StackInit(&s);
+	StackPush(&s, 1);
+	StackPush(&s, 2);
+	StackPush(&s, 3);
+	StackPush(&s, 4);
+	printf("size = %d\n", StackSize(&s));
+	printf("top = %d\n", StackTop(&s));
+
+	StackPop(&s);
+	StackPop(&s);
+	printf("size = %d\n", StackSize(&s));
+	printf("top = %d\n", StackTop(&s));
+
+	StackPop(&s);
+	StackPop(&s);
+	printf("size = %d\n", StackSize(&s));
+}
+
+int main()
+{
+	TestStack();
+	system("pause");
+	return;
+}
