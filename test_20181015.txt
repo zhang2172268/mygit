@@ -1,0 +1,82 @@
+//括号匹配
+/*
+取一个字符：
+1.检测该字符是否为括号：
+是括号，继续1，否则返回
+2.如果是左括号-->入栈
+3.如果是右括号，检测该括号是否与栈顶括号匹配
+是：将栈顶元素出栈
+否：括号的匹配次序出错
+
+栈是否为空：
+空：正确
+非空：左比右括号多
+*/
+int IsBrackets(char ch)//判断括号函数
+{
+	if (('(' == ch) || (')' == ch)
+		|| ('[' == ch) || (']' == ch)
+		|| ('{' == ch) || ('}' == ch))
+	{
+		return 1;
+	}
+	return 0;
+}
+
+void MatchBrackets(const char *str)
+{
+	int i = 0;
+	int size = 0;
+	Stack s;
+	if (NULL == str)
+		return;
+
+	StackInit(&s);
+	size = strlen(str);
+	for (; i < size; i++)
+	{
+		if (IsBrackets(str[i]))
+		{	
+			//当前字符为左括号
+			if ('(' == str[i] || '[' == str[i] || '{' == str[i])
+				StackPush(&s, str[i]);
+			else//当前为右括号
+			{	
+				char ch;
+				if (StackEmpty(&s))//判断栈顶元素是否为空
+				{
+					printf("右括号比左括号多！！！\n");
+					return;
+				}
+				ch = StackTop(&s);
+				if (!(('(' == ch && ')' == str[i])
+					|| ('[' == ch && ']' == str[i])
+					|| ('{' == ch && '}' == str[i])))//检测当前括号是否与栈顶括号匹配
+				{
+					printf("左右括号次序匹配出错！！！\n");
+					return;
+				}
+				StackPop(&s);
+			}
+		}
+	}
+	if (StackEmpty(&s))
+		printf("括号匹配正确！\n");
+	else
+		printf("左括号比右括号多！！！\n");
+}
+
+int main()
+{
+	char a[] = "(())abc{[(])}";//左右括号次序匹配不正确
+	char b[] = "(()))abc{[]}";//右括号比左括号多
+	char c[] = "(()()abc{[]}";//左括号比右括号多
+	char d[] = "(())abc{[]()}";//左右括号匹配正确
+
+	MatchBrackets(a);
+	MatchBrackets(b);
+	MatchBrackets(c);
+	MatchBrackets(d);
+	system("pause");
+	return 0;
+}
