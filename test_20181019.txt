@@ -1,0 +1,270 @@
+/***********************************************/
+//Snake.h
+
+
+#ifndef __SNAKE_H__
+#define __SNAKE_H__
+
+#include <Windows.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#define WALL "◆"
+#define FOOD "■"
+
+#define INIT_X 10
+#define INIT_Y 10
+
+//蛇身结点
+typedef struct SnakeNode
+{
+	int x;
+	int y;
+	struct SnakeNode *next;
+}SnakeNode, *pSnakeNode;
+
+//方向
+enum Direction
+{
+	UP = 1,
+	DOWN,
+	LEFT,
+	RIGHT
+};
+
+//游戏状态
+enum GameStatus
+{
+	OK,//正常运行
+	NORMAL_END,//正常结束
+	KILL_BY_WALL,//撞墙
+	KILL_BY_SELF//咬到自己
+};
+
+typedef struct Snake
+{
+	pSnakeNode _psnake;//蛇身指针维护
+	pSnakeNode _pFood; //维护食物位置
+	int _TotalScore;  //总分数
+	int _AddScore;	 //增加的分数
+	int _SleepTime;	 //休眠时间
+	enum Direction _Dir;//蛇头方向默认向右
+	enum GameStatus _Status;//游戏状态
+}Snake, *pSnake;
+
+
+//打印欢迎界面
+void WelcomeToGame();
+
+//创建地图
+void CreateMap();
+
+//初始化蛇
+void InitSnake(pSnake ps);
+
+//初始化食物
+void CreateFood(pSnake ps);
+
+//创建贪吃蛇
+void GameStart(pSnake ps);
+
+//暂停游戏
+void Pause();
+
+//判断下一步是不是食物
+int NextHasFood(pSnakeNode pn, pSnakeNode pf);
+
+//吃食物
+void EatFood(pSnakeNode pn, pSnake ps);
+
+//没有食物吃
+void NoFood(pSnakeNode pn, pSnake ps);
+
+//蛇的移动
+void SnakeMove(pSnake ps);
+
+//撞墙
+int KillByWall(pSnake ps);
+
+//撞到自身
+int KillBySelf(pSnake ps);
+
+//打印帮助信息
+PrintHelpInfo(pSnake ps);
+
+//游戏开始跑起来
+void GameRun(pSnake ps);
+
+//结束游戏
+void GameEnd(pSnake ps);
+
+
+#endif //__SNAKE_H__
+
+
+
+
+/***********************************************/
+//Snake.c
+
+
+#include "Snake.h"
+
+
+//创新结点
+pSnakeNode BuyNode()
+{
+	pSnakeNode pRet = (pSnakeNode)malloc(sizeof(SnakeNode));
+	if (NULL == pRet)
+	{
+		perror("BuyNode::malloc()");
+		exit(EXIT_FAILURE);
+	}
+	pRet->x = 0;
+	pRet->y = 0;
+	pRet->next = NULL;
+
+	return pRet;
+}
+
+//设置位置函数
+void SetPos(int x, int y)
+{
+	COORD pos = { 0 };
+	HANDLE hOutput = NULL;
+
+	pos.X = x;
+	pos.Y = y;
+
+	hOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleCursorPosition(hOutput, pos);
+}
+
+//打印欢迎界面
+void WelcomeToGame()
+{
+	//设置窗口大小
+	system("mode con cols=120 lines=30");
+	SetPos(45, 14);
+	printf("欢迎来到贪吃蛇小游戏.");
+	SetPos(45, 28);
+	system("pause");
+	system("cls");
+	SetPos(40, 13);
+	printf("用 ↑ ↓ ← → 来控制蛇的移动. F1为加速.F2为减速.");
+	SetPos(40, 15);
+	printf("加速获得分数更高");
+	SetPos(40, 28);
+	system("pause");
+	system("cls");
+
+}
+
+//创建地图
+void CreateMap()
+{
+	int i;
+	SetPos(0, 0);
+	//上
+	for (i = 0; i <= 58; i += 2)
+	{
+		SetPos(i, 0);
+		printf(WALL);
+	}
+	//下
+	for (i = 0; i <= 58; i += 2)
+	{
+		SetPos(i, 27);
+		printf(WALL);
+	}
+	//左
+	for (i = 1; i <= 26; i++)
+	{
+		SetPos(0, i);
+		printf(WALL);
+	}
+	//右
+	for (i = 1; i <= 26; i++)
+	{
+		SetPos(58, i);
+		printf(WALL);
+	}
+}
+
+//初始化蛇
+void InitSnake(pSnake ps)
+{
+	pSnakeNode first = BuyNode();
+	pSnakeNode cur = NULL;
+	int i = 0;
+	first->x = INIT_X;//蛇在地图中的起始位置
+	first->y = INIT_Y;
+
+	for (i = 1; i <= 4; i++)//蛇的起始长度为5☆
+	{
+		cur = BuyNode();
+		cur->x = first->x + 2;
+		cur->y = first->y;
+		cur->next = first;
+		first = cur;
+	}
+	
+	cur = first;
+	while (cur)
+	{
+		SetPos(cur->x, cur->y);
+		printf(FOOD);
+		SetPos(60, 27);
+		cur = cur->next;
+	}
+	ps->_psnake = first;
+}
+
+//初始化食物
+void CreateFood(pSnake ps)
+{
+	pSnakeNode pfood = BuyNode();
+	pSnakeNode cur = ps->_psnake;
+	pfood->y = rand() % 25 + 1;
+	do
+	{
+		//0-56
+		pfood->x = rand() % 55 + 2;
+	} while (pfood->x % 2 != 0);
+
+	while (cur)
+	{
+		if (cur->x == pfood->x && cur->y == pfood->y)
+		{
+			CreateFood(ps);
+			return;
+		}
+		cur = cur->next;
+	}
+	ps->_pFood = pfood;
+	SetPos(pfood->x, pfood->y);
+	printf(FOOD);
+	//SetPos(60, 27);
+}
+
+//创建贪吃蛇
+void GameStart(pSnake ps)
+{
+	//打印欢迎界面
+	WelcomeToGame();
+
+	//创建地图
+	CreateMap();
+
+	//初始化蛇
+	InitSnake(ps);
+
+	//初始化食物
+	CreateFood(ps);
+
+	ps->_AddScore = 10; 
+	ps->_TotalScore = 0;
+	ps->_Dir = RIGHT;
+	ps->_SleepTime = 200;
+	ps->_Status = OK;
+}
