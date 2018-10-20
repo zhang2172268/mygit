@@ -1,0 +1,273 @@
+//暂停游戏
+void Pause()
+{
+	while (1)
+	{
+		Sleep(100);
+		if (GetAsyncKeyState(VK_SPACE))
+			break;
+	}
+}
+
+//判断下一步是不是食物
+int NextHasFood(pSnakeNode pn, pSnakeNode pf)
+{
+ 	return ((pn->x == pf->x) && (pn->y == pf->y));
+}
+
+//吃食物
+void EatFood(pSnakeNode pn, pSnake ps)
+{
+	pSnakeNode cur = NULL;
+	pn->next = ps->_psnake;
+	ps->_psnake = pn;
+	cur = ps->_psnake;
+
+	while (cur != NULL)
+	{
+		SetPos(cur->x, cur->y);
+		printf(FOOD);
+		cur = cur->next;
+	}
+	ps->_TotalScore += ps->_AddScore;
+	CreateFood(ps);
+}
+
+//没有食物吃
+void NoFood(pSnakeNode pn, pSnake ps)
+{
+	pSnakeNode cur = NULL;
+	pn->next = ps->_psnake;
+	ps->_psnake = pn;
+	
+	cur = ps->_psnake;
+	while (cur->next->next != NULL)
+	{
+		SetPos(cur->x, cur->y);
+		printf(FOOD);
+		cur = cur->next;
+	}
+	SetPos(cur->next->x, cur->next->y);
+	printf(" ");
+	free(cur->next);
+	cur->next = NULL;
+}
+
+//蛇的移动
+void SnakeMove(pSnake ps)
+{
+	pSnakeNode pNextNode = BuyNode();
+
+	switch (ps->_Dir)
+	{
+	case UP:
+		pNextNode->x = ps->_psnake->x;
+		pNextNode->y = ps->_psnake->y-1;
+		if (NextHasFood(pNextNode, ps->_pFood))
+		{
+			EatFood(pNextNode, ps);
+		}
+		else
+		{
+			NoFood(pNextNode, ps);
+		}
+		break;
+	case DOWN:
+		pNextNode->x = ps->_psnake->x;
+		pNextNode->y = ps->_psnake->y+1;
+		if (NextHasFood(pNextNode, ps->_pFood))
+		{
+			EatFood(pNextNode, ps);
+		}
+		else
+		{
+			NoFood(pNextNode, ps);
+		}
+		break;
+	case LEFT:
+		pNextNode->x = ps->_psnake->x-2;
+		pNextNode->y = ps->_psnake->y;
+		if (NextHasFood(pNextNode, ps->_pFood))
+		{
+			EatFood(pNextNode, ps);
+		}
+		else
+		{
+			NoFood(pNextNode, ps);
+		}
+		break;
+	case RIGHT:
+		pNextNode->x = ps->_psnake->x+2;
+		pNextNode->y = ps->_psnake->y;
+		if (NextHasFood(pNextNode, ps->_pFood))
+		{
+			EatFood(pNextNode, ps);
+		}
+		else
+		{
+			NoFood(pNextNode, ps);
+		}
+		break;
+	}
+}
+
+//撞墙
+int KillByWall(pSnake ps)
+{
+	if ((ps->_psnake->x == 0)
+		|| (ps->_psnake->x == 58)
+		|| (ps->_psnake->y == 0)
+		|| (ps->_psnake->y == 27))
+	{
+		ps->_Status = KILL_BY_WALL;
+	}
+}
+
+//撞到自身
+int KillBySelf(pSnake ps)
+{
+	pSnakeNode pNext = ps->_psnake->next;
+
+	while (pNext != NULL)
+	{
+		if (pNext->x == ps->_psnake->x && pNext->y == ps->_psnake->y)
+		{
+			ps->_Status = KILL_BY_SELF;
+			return;
+		}
+		pNext = pNext->next;
+	}
+}
+
+//打印帮助信息
+PrintHelpInfo(pSnake ps)
+{
+	SetPos(61, 6);
+	printf("总分 = %d", ps->_TotalScore);
+	SetPos(61, 8);
+	printf("蛇移动的时间 = %d", ps->_SleepTime);
+	SetPos(61, 10);
+	printf("加减速变化的分数 = %d ", ps->_AddScore);
+
+	SetPos(61, 15);
+	printf("用 ↑ ↓ ← → 来控制蛇的移动. F1为加速.F2为减速.");
+	SetPos(61, 17);
+	printf("空格暂停游戏");
+	SetPos(61, 19);
+	printf("按 ESC键 退出游戏");
+
+	
+
+}
+
+//游戏开始跑起来
+void GameRun(pSnake ps)
+{
+	do
+	{
+		PrintHelpInfo(ps);//帮助提示
+		//确定方向
+		if (GetAsyncKeyState(VK_UP) && ps->_Dir != DOWN)
+			ps->_Dir = UP;
+		else if(GetAsyncKeyState(VK_DOWN) && ps->_Dir != UP)
+			ps->_Dir = DOWN;
+		else if (GetAsyncKeyState(VK_LEFT) && ps->_Dir != RIGHT)
+			ps->_Dir = LEFT;
+		else if (GetAsyncKeyState(VK_RIGHT) && ps->_Dir != LEFT)
+			ps->_Dir = RIGHT;
+		else if (GetAsyncKeyState(VK_SPACE))
+		{
+			//暂停游戏
+			Pause();
+		}
+		else if (GetAsyncKeyState(VK_ESCAPE))
+		{
+			//结束游戏
+			ps->_Status = NORMAL_END;
+			break;
+		}
+		else if (GetAsyncKeyState(VK_F1))
+		{
+			//加速
+			if (ps->_SleepTime >= 40)
+			{
+				ps->_SleepTime -= 20;
+				ps->_AddScore += 2;
+			}
+		}
+		else if (GetAsyncKeyState(VK_F2))
+		{
+			//减速
+			if (ps->_SleepTime < 300)
+			{
+				ps->_SleepTime += 20;
+				ps->_AddScore -= 2;
+			}
+			
+		}
+
+		Sleep(ps->_SleepTime);
+
+		//蛇的移动
+		SnakeMove(ps);
+
+		KillByWall(ps);
+
+		KillBySelf(ps);
+	} while (ps->_Status == OK);
+}
+
+//结束游戏
+void GameEnd(pSnake ps)
+{
+	pSnakeNode del;
+	pSnakeNode cur = ps->_psnake;
+	SetPos(20, 12);
+	switch(ps->_Status)
+	{
+		case NORMAL_END:
+			printf("游戏正常结束!");
+			SetPos(61, 27);
+			break;
+		case KILL_BY_WALL:
+			printf("你撞墙了！");
+			SetPos(61, 27);
+			break;
+		case KILL_BY_SELF:
+			printf("你把自己咬了!");
+			SetPos(61, 27);
+			break;
+	}
+
+	while (cur)
+	{
+		del = cur;
+		cur = cur->next;
+		free(del);
+		del = NULL;
+	}
+}
+
+
+
+/***********************************************/
+//test.c
+
+
+#include "Snake.h"
+
+void test()
+{
+	Snake snake = { 0 };
+	srand((unsigned int)time(NULL));
+	GameStart(&snake);//创建贪吃蛇
+	GameRun(&snake);
+	GameEnd(&snake);
+}
+
+int main()
+{
+	test();
+	system("pause");
+	return 0;
+}
