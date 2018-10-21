@@ -1,0 +1,143 @@
+/************************************/
+//BinTree.h
+
+
+typedef int BDataType;
+
+typedef struct BTNode
+{
+	struct BTNode *_pLeft;
+	struct BTNode *_pRight;
+	BDataType data;
+}BTNode;
+
+
+//创建二叉树
+void CrateBinTree(BTNode **pRoot, char *str, int size, int *index, BDataType inValid);
+
+//前序遍历二叉树
+void PreOrderBinTree(BTNode *pRoot);
+
+//中序遍历二叉树
+void InOrderBinTree(BTNode *pRoot);
+
+//后序遍历二叉树
+void PostOrderBinTree(BTNode *pRoot);
+
+//销毁二叉树
+void DestoryBinTree(BTNode **pRoot);
+
+
+/************************************/
+//BinTree.c
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <string.h>
+
+
+//创建新结点
+static BTNode *BuyBTNode(BDataType data)
+{
+	BTNode *pNewNode;
+	pNewNode = (BTNode *)malloc(sizeof(BTNode));
+	if (NULL == pNewNode)
+	{
+		printf("创建新结点失败!\n");
+		assert(0);
+	}
+	pNewNode->data = data;
+	pNewNode->_pLeft = NULL;
+	pNewNode->_pRight = NULL;
+}
+
+//创建二叉树
+void CrateBinTree(BTNode **pRoot, char *str, int size, int *index, BDataType invalid)
+{
+	if (*index < size && invalid != str[*index])
+	{
+		//创建根结点
+		*pRoot = BuyBTNode(str[*index]);
+		
+		++(*index);
+		//创建左子树
+		CrateBinTree(&((*pRoot)->_pLeft), str, size, index, invalid);
+
+		++(*index);
+		//创建右子树
+		CrateBinTree(&((*pRoot)->_pRight), str, size, index, invalid);
+	}
+}
+
+//前序遍历二叉树
+void PreOrderBinTree(BTNode *pRoot)
+{
+	if (pRoot)
+	{
+		printf("%c", pRoot->data);
+		PreOrderBinTree(pRoot->_pLeft);
+		PreOrderBinTree(pRoot->_pRight);
+	}
+}
+
+//中序遍历二叉树
+void InOrderBinTree(BTNode *pRoot)
+{
+	if (pRoot)
+	{
+		InOrderBinTree(pRoot->_pLeft);
+		printf("%c", pRoot->data);
+		InOrderBinTree(pRoot->_pRight);
+	}
+}
+
+//后序遍历二叉树
+void PostOrderBinTree(BTNode *pRoot)
+{
+	if (pRoot)
+	{
+		PostOrderBinTree(pRoot->_pLeft);
+		PostOrderBinTree(pRoot->_pRight);
+		printf("%c", pRoot->data);
+	}
+}
+
+//销毁二叉树
+void DestoryBinTree(BTNode **pRoot)
+{
+	if (NULL == *pRoot)
+		return;
+
+	DestoryBinTree(&((*pRoot)->_pLeft));
+	DestoryBinTree(&((*pRoot)->_pRight));
+
+	free(*pRoot);
+	*pRoot = NULL;
+}
+
+void BinTree()
+{
+	BTNode *pRoot;
+	BTNode *pCP;
+	char str[] = "ABD###CE##F";
+	int size = strlen(str);
+	int index = 0;
+	int count = 0;
+
+	CrateBinTree(&pRoot, &str, size, &index, '#');
+	
+	printf("前序遍历：");
+	PreOrderBinTree(pRoot);
+	printf("\n");
+	
+	printf("中序遍历：");
+	InOrderBinTree(pRoot);
+	printf("\n");
+
+	printf("后序遍历：");
+	PostOrderBinTree(pRoot);
+	printf("\n");
+
+	DestoryBinTree(&pRoot);
+
+}
