@@ -1,0 +1,204 @@
+/************************************/
+//BinTree.h
+
+
+typedef int BDataType;
+
+typedef struct BTNode
+{
+	struct BTNode *_pLeft;
+	struct BTNode *_pRight;
+	BDataType data;
+}BTNode;
+
+
+//创建二叉树
+void CrateBinTree(BTNode **pRoot, char *str, int size, int *index, BDataType inValid);
+
+
+//前序遍历二叉树(非递归)
+void PreOrderBinTreeNor(BTNode *pRoot);
+
+
+//中序遍历二叉树(非递归)
+void InOrderBinTreeNor(BTNode *pRoot);
+
+
+//后序遍历二叉树(非递归)
+void PostOrderBinTreeNor(BTNode *pRoot);
+
+//层序遍历二叉树
+void LevelOrderBintree(BTNode *pRoot);
+
+
+/************************************/
+//BinTree.c
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <string.h>
+#include "LQueue.h"
+#include "Stack.h"
+
+
+
+//创建新结点
+static BTNode *BuyBTNode(BDataType data)
+{
+	BTNode *pNewNode;
+	pNewNode = (BTNode *)malloc(sizeof(BTNode));
+	if (NULL == pNewNode)
+	{
+		printf("创建新结点失败!\n");
+		assert(0);
+	}
+	pNewNode->data = data;
+	pNewNode->_pLeft = NULL;
+	pNewNode->_pRight = NULL;
+}
+
+//创建二叉树
+void CrateBinTree(BTNode **pRoot, char *str, int size, int *index, BDataType invalid)
+{
+	if (*index < size && invalid != str[*index])
+	{
+		//创建根结点
+		*pRoot = BuyBTNode(str[*index]);
+		
+		++(*index);
+		//创建左子树
+		CrateBinTree(&((*pRoot)->_pLeft), str, size, index, invalid);
+
+		++(*index);
+		//创建右子树
+		CrateBinTree(&((*pRoot)->_pRight), str, size, index, invalid);
+	}
+}
+
+//前序遍历二叉树（非递归）
+void PreOrderBinTreeNor(BTNode *pRoot)
+{
+	Stack s;
+	BTNode *pCur = NULL;
+	if (NULL == pRoot)
+		return NULL;
+
+	StackInit(&s);
+	StackPush(&s, pRoot);
+	while (!StackEmpty(&s))
+	{
+		pCur = StackTop(&s);
+		printf("%c", pCur->data);
+		StackPop(&s);
+		if (pCur->_pRight)
+			StackPush(&s, pCur->_pRight);
+		if (pCur->_pLeft)
+			StackPush(&s, pCur->_pLeft);
+	}
+}
+
+
+//中序遍历二叉树(非递归)
+void InOrderBinTreeNor(BTNode *pRoot)
+{
+	Stack s;
+	BTNode *pCur = pRoot;
+	if (NULL == pRoot)
+		return;
+	StackInit(&s);
+	while (!StackEmpty(&s) || pCur)
+	{
+		while (pCur)
+		{
+			StackPush(&s, pCur);
+			pCur = pCur->_pLeft;
+		}
+
+		pCur = StackTop(&s);
+		printf("%c", pCur->data);
+		StackPop(&s);
+		pCur = pCur->_pRight;
+	}
+}
+
+
+//后序遍历二叉树(非递归)
+void PostOrderBinTreeNor(BTNode *pRoot)
+{
+	Stack s;
+	BTNode *pTop = NULL;
+	BTNode *pPre = NULL;
+	BTNode *pCur = pRoot;
+	if (NULL == pRoot)
+		return;
+	StackInit(&s);
+	while (!StackEmpty(&s) || pCur)
+	{
+		while (pCur)
+		{
+			StackPush(&s, pCur);
+			pCur = pCur->_pLeft;
+		}
+
+		pTop = StackTop(&s);
+		if (NULL == pTop->_pRight || pPre == pTop->_pRight)
+		{
+			printf("%c", pTop->data);
+			pPre = pTop;
+			StackPop(&s);
+		}
+		else
+			pCur = pTop->_pRight;
+	}
+}
+
+//层序遍历
+void LevelOrderBintree(BTNode *pRoot)
+{
+	LQueue q;
+	BTNode *pCur = NULL;
+	if (NULL == pRoot)
+		return;
+	LQueueInit(&q);
+	LQueuePush(&q, pRoot);
+	while (!LQueueEmpty(&q))
+	{
+		pCur = LQueueTop(&q);
+		printf("%c", pCur->data); 
+		if (pCur->_pLeft)
+			LQueuePush(&q, pCur->_pLeft);
+		if (pCur->_pRight)
+			LQueuePush(&q, pCur->_pRight);
+		LQueuePop(&q);
+	}
+}
+
+void BinTree()
+{
+	BTNode *pRoot;
+	BTNode *pCP;
+	char str[] = "ABD###CE##F";
+	int size = strlen(str);
+	int index = 0;
+	int count = 0;
+
+	CrateBinTree(&pRoot, &str, size, &index, '#');
+	
+	printf("前序遍历(非递归)：");
+	PreOrderBinTreeNor(pRoot);
+	printf("\n");
+
+	printf("中序遍历(非递归):");
+	InOrderBinTreeNor(pRoot);
+	printf("\n");
+
+	printf("后序遍历(非递归):");
+	PostOrderBinTreeNor(pRoot);
+	printf("\n");
+
+	printf("层序遍历：");
+	LevelOrderBintree(pRoot);
+	printf("\n");
+
+	DestoryBinTree(&pRoot);
+}
