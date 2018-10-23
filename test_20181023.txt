@@ -1,0 +1,74 @@
+//拷贝二叉树
+BTNode *CopyBinTree(BTNode *pRoot)
+{
+	if (NULL == pRoot)
+		return;
+	if (pRoot)
+		pRoot = BuyBTNode(pRoot->data);
+	if (pRoot->_pLeft)
+		CopyBinTree(pRoot->_pLeft);
+	if (pRoot->_pRight)
+		CopyBinTree(pRoot->_pRight);
+	return pRoot;
+}
+
+//求二叉树结点数
+int GetBTNodeCount(BTNode *pRoot)
+{
+	if (NULL == pRoot)
+		return 0;
+	return GetBTNodeCount(pRoot->_pLeft) + GetBTNodeCount(pRoot->_pRight) + 1;
+}
+
+//求叶子结点数
+int GetLeafNodeCount(BTNode *pRoot)
+{
+	if (NULL == pRoot)
+		return 0;
+	if (NULL == pRoot->_pLeft && NULL == pRoot->_pRight)
+		return 1;
+	return GetLeafNodeCount(pRoot->_pLeft) + GetLeafNodeCount(pRoot->_pRight);
+}
+
+//求低K层结点数
+int GetKLevelNodeCount(BTNode *pRoot, int k)
+{
+	if (NULL == pRoot || 0 == k)
+		return 0;
+	if (1 == k)
+		return 1;
+	return GetKLevelNodeCount(pRoot->_pLeft, k - 1) + GetKLevelNodeCount(pRoot->_pRight, k - 1);
+}
+
+//求二叉树的高度
+int HeightBinTree(BTNode *pRoot)
+{
+	if (NULL == pRoot)
+		return 0;
+	return (HeightBinTree(pRoot->_pLeft) > HeightBinTree(pRoot->_pRight)) ? HeightBinTree(pRoot->_pLeft)+1 : HeightBinTree(pRoot->_pRight)+1;
+}
+
+//判断一个结点是否在二叉树中
+int IsBTNodeBinTree(BTNode*pRoot, BTNode *pNode)
+{
+	if (NULL == pRoot || NULL == pNode)
+		return 0;
+	if (pRoot == pNode)
+		return 1;
+	if (IsBTNodeBinTree(pRoot->_pLeft, pNode))
+		return 1;
+	return IsBTNodeBinTree(pRoot->_pRight, pNode);
+}
+
+//查找一个结点的双亲结点
+BTNode * GetBTNodeParent(BTNode *pRoot, BTNode *pNode)
+{
+	BTNode *Parent = NULL;
+	if (NULL == pRoot || NULL == pNode || (NULL == pRoot->_pLeft && NULL == pRoot->_pRight))
+		return NULL;
+	if (pRoot->_pLeft == pNode || pRoot->_pRight == pNode)
+		return pRoot;
+	if (Parent = GetBTNodeParent(pRoot->_pLeft, pNode))
+		return Parent;
+	return GetBTNodeParent(pRoot->_pRight, pNode);
+}
