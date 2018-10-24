@@ -1,0 +1,81 @@
+//判断是否是完全二叉树
+int IsCompleteBinTree(BTNode *pRoot)
+{
+	LQueue q;
+	int flag = 0;
+	BTNode *pCur = NULL;
+	if (NULL == pRoot)
+		return 1;
+
+	LQueueInit(&q);
+	LQueuePush(&q, pRoot);
+	while (!LQueueEmpty(&q))
+	{
+		pCur = LQueueTop(&q);
+		LQueuePop(&q);
+		if (1 == flag)
+		{
+			if (pCur->_pLeft || pCur->_pRight)
+				return 0;
+		}
+
+		else
+		{
+			if (pCur->_pLeft && pCur->_pRight)
+			{
+				LQueuePush(&q, pCur->_pRight);
+				LQueuePush(&q, pCur->_pLeft);
+				flag = 0;
+			}
+			else if (pCur->_pLeft)
+			{
+				LQueuePush(&q, pCur->_pLeft);
+				flag = 1;
+			}
+			else if (pCur->_pRight)
+				return 0;
+			else
+				flag = 1;
+		}
+		/*LQueuePop(&q);*/
+	}
+	return 1;
+}
+
+//二叉树的镜像
+void MirrorBinTree(BTNode *pRoot)
+{
+	if (NULL == pRoot)
+		return;
+	Swap(&pRoot->_pLeft, &pRoot->_pRight);
+
+	if (pRoot->_pLeft)
+		MirrorBinTree(pRoot->_pLeft);
+	if(pRoot->_pRight)
+		MirrorBinTree(pRoot->_pRight);
+	
+}
+
+//二叉树的镜像（非递归）
+void MirrorBinTreeNor(BTNode *pRoot)
+{
+	LQueue q;
+	BTNode *pCur = NULL;
+	if (NULL == pRoot)
+		return;
+	LQueueInit(&q);
+	LQueuePush(&q, pRoot);
+	while (!LQueueEmpty(&q))
+	{
+		pCur = LQueueTop(&q);
+		printf("%c", pCur->data);
+		
+		if (pCur->_pLeft)
+			LQueuePush(&q, pCur->_pLeft);
+		if (pCur->_pRight)
+			LQueuePush(&q, pCur->_pRight);
+	
+		Swap(&pCur->_pLeft, &pCur->_pRight);
+		LQueuePop(&q);
+	}
+}
