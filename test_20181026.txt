@@ -1,0 +1,49 @@
+//堆排序向下调整
+void HeapAdjustDown(int *arr, int size, int parent)
+{
+	int child = parent * 2 + 1;
+	assert(arr);
+	//while (child < size)
+	//{
+	//	if (child + 1 < size && arr[child] < arr[child + 1])//右孩子存在
+	//		child += 1;//标记最大的孩子
+	//}
+
+	if (child + 1 < size && arr[child] < arr[child + 1])//右孩子存在
+		child += 1;//标记最大的孩子
+
+	if (arr[child] > arr[parent])
+	{
+		Swap(&arr[child], &arr[parent]);
+		parent = child;//把双亲走到孩子位置
+		child = parent * 2 + 1;
+	}
+	else
+		return;
+}
+
+//堆排序(升序)
+void HeapSort(int *arr, int size)
+{
+	int end = size - 1;//最后一个元素的下标
+
+	//建堆
+	int root = (size - 2) >> 1;//最后一个非叶子结点
+	for (; root >= 0; --root)
+		HeapAdjustDown(arr, size, root);
+
+	//排序
+	while (end)
+	{
+		Swap(&arr[0], &arr[end]);
+		HeapAdjustDown(arr, end, 0);
+		--end;
+	}
+}
+
+void TestHeapSort()
+{
+	int arr[] = { 53, 17, 78, 9, 45, 65, 87, 26, 31 };
+
+	HeapSort(arr, sizeof(arr) / sizeof(arr[0]));
+}
