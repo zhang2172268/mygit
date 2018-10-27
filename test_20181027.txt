@@ -1,0 +1,97 @@
+/*******************************************************/
+//PriorityQueue.h
+
+#include "Heap.h"
+
+typedef struct PriorityQueue
+{
+	Heap _hp;
+}PriorityQueue;
+
+
+//初始化优先级队列
+void InitPriorityQueue(PriorityQueue* q);
+
+//向优先级插入队列
+void PushPriorityQueue(PriorityQueue* q, HPDataType data);
+
+//从优先级队列出队列
+void PopPriorityQueue(PriorityQueue* q);
+
+//获取优先级队列队顶元素
+HPDataType TopPriorityQueue(PriorityQueue* q);
+
+//获取优先级队列大小
+int SizePriorityQueue(PriorityQueue* q);
+
+//优先级队列判空操作
+int EmptyPriorityQueue(PriorityQueue* q);
+
+
+/*******************************************************/
+//PriorityQueue.c
+#include "Heap.h"
+
+//初始化优先级队列
+void InitPriorityQueue(PriorityQueue* q)
+{
+	InitHeap(&q->_hp);
+}
+
+//向优先级插入队列
+void PushPriorityQueue(PriorityQueue* q, HPDataType data)
+{
+	InsertHeap(&q->_hp, data);
+}
+
+//从优先级队列出队列
+void PopPriorityQueue(PriorityQueue* q)
+{
+	return RemoveHeap(&q->_hp);
+}
+
+//获取优先级队列队顶元素
+HPDataType TopPriorityQueue(PriorityQueue* q)
+{
+	return TopHeap(&q->_hp);
+}
+
+//获取优先级队列大小
+int SizePriorityQueue(PriorityQueue* q)
+{
+	return SizeHeap(&q->_hp);
+}
+
+//优先级队列判空操作
+int EmptyPriorityQueue(PriorityQueue* q)
+{
+	return EmptyHeap(&q->_hp);
+}
+
+
+
+
+#include "Heap.h"
+#include <stdio.h>
+
+
+void TestHeap()
+{
+	Heap hp;
+	int arr[] = { 53, 17, 78, 9, 45, 65, 87, 26, 31 };
+
+	InitHeap(&hp);
+
+	CreateHeap(&hp, arr, sizeof(arr) / sizeof(arr[0]), Less);
+
+	InsertHeap(&hp, 11);
+	printf("size = %d\n", SizeHeap(&hp));
+	printf("top = %d\n", TopHeap(&hp));
+
+	RemoveHeap(&hp);
+	printf("size = %d\n", SizeHeap(&hp));
+	printf("top = %d\n", TopHeap(&hp));
+
+	DestroyHeap(&hp);
+}
+
