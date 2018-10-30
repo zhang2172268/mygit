@@ -1,0 +1,197 @@
+/***************************************/
+//Hash.h
+
+
+#define MAX_SIZE 10
+
+typedef int DataType;
+
+typedef enum{EXIST, EMPTY, DELETE}State;
+
+typedef struct HTElem
+{
+	DataType _data;
+	State _state;
+}HTElem;
+
+typedef struct HashTable
+{
+	HTElem _array[MAX_SIZE];
+	int _total;//哈希表中元素的个数
+	int _size;//计算哈希表中有效元素的个数
+}HashTable, HT;
+
+//哈希表的初始化
+void InitHashTable(HT *ht);
+
+//哈希表的插入
+void InsertHashTable(HT *ht, DataType data);
+
+//哈希表的删除
+void DeleteHashTable(HT *ht, DataType data);
+
+//哈希表的查找
+int FindHashTable(HT *ht, DataType data);
+
+//计算哈希表长度
+int SizeHashTable(HT *ht);
+
+//哈希表的判空
+int EmptyHashTable(HT *ht);
+
+//计算哈希地址
+int FuncHash(DataType data);
+
+
+/***************************************/
+//Hash.c
+#include <assert.h>
+
+
+//哈希表的初始化
+void InitHashTable(HT *ht)
+{
+	assert(ht);
+	int i = 0;
+	for (; i < MAX_SIZE; ++i)
+		ht->_array[i]._state = EMPTY;
+	ht->_size = 0;
+	ht->_total = 0;
+}
+
+//哈希表的插入
+void InsertHashTable(HT *ht, DataType data)
+{
+	int hashAddr;
+	int i = 0;
+	assert(ht);
+
+	if (ht->_total == MAX_SIZE)//说明哈希表元素已满
+		return;
+
+	//计算哈希地址
+	hashAddr = FuncHash(data);
+
+	while (EMPTY != ht->_array[hashAddr]._state)
+	{
+		if (EXIST == ht->_array[hashAddr]._state)
+		{
+			if (data == ht->_array[hashAddr]._data)
+				return;
+		}
+#if 0
+		hashAddr++;
+		if (hashAddr == MAX_SIZE)//越界了，从头开始访问
+			hashAddr = 0;
+#else
+		//二次探测
+		hashAddr = hashAddr + 2 * i + 1;
+		if (hashAddr >= MAX_SIZE)
+			hashAddr %= MAX_SIZE;
+#endif
+	}
+
+	//插入元素
+	ht->_array[hashAddr]._data = data;
+	ht->_array[hashAddr]._state = EXIST;
+	ht->_size++;
+	ht->_total++;
+}
+
+//哈希表的删除
+void DeleteHashTable(HT *ht, DataType data)
+{
+	assert(ht);
+	if (-1 != FindHashTable(ht, data))
+	{
+		ht->_array[FindHashTable(ht, data)]._state = DELETE;
+		ht->_size--;
+	}
+}
+
+//哈希表的查找
+int FindHashTable(HT *ht, DataType data)
+{
+	int hashAddr;
+	int i=0;
+	assert(ht);
+	hashAddr = FuncHash(data);
+
+	while (EMPTY != ht->_array[hashAddr]._state)
+	{
+		if (EXIST == ht->_array[hashAddr]._state)
+		{
+			if (data == ht->_array[hashAddr]._data)
+				return hashAddr;
+		}
+
+#if 0
+		hashAddr++;
+		if (hashAddr == MAX_SIZE)//越界了，从头开始访问
+			hashAddr = 0;
+#else
+		//二次探测
+		hashAddr = hashAddr + 2 * i + 1;
+		if (hashAddr >= MAX_SIZE)
+			hashAddr %= MAX_SIZE;
+#endif
+	}
+	return -1;
+}
+
+//计算哈希表长度
+int SizeHashTable(HT *ht)
+{
+	assert(ht);
+	return ht->_size;
+}
+
+//哈希表的判空
+int EmptyHashTable(HT *ht)
+{
+	assert(ht);
+	return 0 == ht->_size;
+}
+
+//计算哈希地址
+int FuncHash(DataType data)
+{
+	return data%MAX_SIZE;
+}
+
+
+/***************************************/
+//test.c
+#include"Hash.h"
+#include <stdio.h>
+
+void TestHash()
+{
+	HashTable ht;
+	InitHashTable(&ht);
+	InsertHashTable(&ht, 23);
+	InsertHashTable(&ht, 14);
+	InsertHashTable(&ht, 35);
+	InsertHashTable(&ht, 22);
+	InsertHashTable(&ht, 27);
+	InsertHashTable(&ht, 17);
+
+	printf("size = %d\n", SizeHashTable(&ht));
+	if (-1 == FindHashTable(&ht, 17))
+		printf("17 这个元素不存在\n");
+	else
+		printf("17 这个元素存在\n");
+
+	if (-1 == FindHashTable(&ht, 37))
+		printf("37 这个元素不存在\n");
+	else
+		printf("37 这个元素存在\n");
+}
+
+int main()
+{
+	TestHash();
+	system("pause");
+	return 0;
+}
+
