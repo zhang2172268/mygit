@@ -1,0 +1,59 @@
+#include <stdio.h>
+
+//打印函数
+void PrintArray(int *array, int size)
+{
+	int i = 0;
+	for (; i < size; i++)
+	{
+		printf("%d ", array[i]);
+	}
+	printf("\n");
+}
+
+//希尔排序
+void ShellSort(int *array, int size)
+{
+	//int gap = 3;
+	//int gap = gap / 3 + 1;这个方式较优
+	int gap = size;
+	while (gap > 1)
+	{
+		int i = 0;
+		gap = gap / 3 + 1; 
+		for (i = gap; i < size; ++i)
+		{
+			int key = array[i];
+			int end = i - gap;
+
+			//找待插入元素的位置，搬移元素
+			while (end >= 0 && key < array[end])
+			{
+				array[end + gap] = array[end];
+				end -= gap;
+			}
+
+			//插入数据
+			array[end + gap] = key;
+		}
+		//gap--;
+		//gap /= 2;
+	}
+}
+
+
+
+void TestSort()
+{
+	int array[] = { 2, 0, 4, 9, 3, 6, 8, 7, 1, 5 };
+	PrintArray(array, sizeof(array) / sizeof(array[0]));
+	ShellSort(array, sizeof(array) / sizeof(array[0]));
+	PrintArray(array, sizeof(array) / sizeof(array[0]));
+}
+
+int main()
+{
+	TestSort();
+	system("pause");
+	return 0;
+}
