@@ -1,0 +1,84 @@
+//选择法排序
+void SelectSort(int *array, int size)
+{
+	int i;
+	for (i = 0; i < size - 1; ++i)
+	{
+		int j = 1;
+		int maxPos = 0;
+		for (; j < size - i; ++j)
+		{
+			if (array[j] > array[maxPos])
+				maxPos = j;
+		}
+		if (maxPos != size - i - 1)
+			Swap(&array[size - 1 - i], &array[maxPos]);
+	}
+}
+
+//【选择法排序优化】
+void SelectSort_OP(int *array, int size)
+{
+	int begin = 0;
+	int end = size - 1;
+	while (begin < end)
+	{
+		int minPos = begin;
+		int maxPos = begin;
+
+		//找最大于最小元素的位置
+		int i = begin + 1;
+		while (i <= end)
+		{
+			if (array[i] > array[maxPos])
+				maxPos = i;
+
+			if (array[i] < array[minPos])
+				minPos = i;
+
+			++i;
+		}
+
+		if (maxPos != end)
+			Swap(&array[maxPos], &array[end]);
+
+		//最小的元素有可能在end的位置，重新标记minPos
+		if (minPos == end)
+			minPos = maxPos;
+
+		if (minPos != begin)
+			Swap(&array[minPos], &array[begin]);
+
+		begin++;
+		end--;
+	}
+}
+
+//交换函数
+void Swap(int *pLeft, int *pRight)
+{
+	int tmp = *pLeft;
+	*pLeft = *pRight;
+	*pRight = tmp;
+}
+
+//打印函数
+void PrintArray(int *array, int size)
+{
+	int i = 0;
+	for (; i < size; i++)
+	{
+		printf("%d ", array[i]);
+	}
+	printf("\n");
+}
+
+void TestSort()
+{
+	int array[] = { 2, 0, 4, 9, 3, 6, 8, 7, 1, 5 };
+	PrintArray(array, sizeof(array) / sizeof(array[0]));
+	//SelectSort(array, sizeof(array) / sizeof(array[0]));
+	SelectSort_OP(array, sizeof(array) / sizeof(array[0]));
+	PrintArray(array, sizeof(array) / sizeof(array[0]));
+}
+
