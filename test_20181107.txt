@@ -1,0 +1,38 @@
+//Ã°ÅÝÅÅÐò
+void BubbleSort(int *array, int size)
+{
+	int i, j;
+	for (i = 0; i < size; i++)
+	{
+		int isChange = 0;
+		for (j = 0; j < size - i - 1; ++j)
+		{
+			if (array[j] > array[j + 1])
+			{
+				isChange = 1;
+				Swap(&array[j], &array[j + 1]);
+			}
+		}
+		if (!isChange)
+			return;
+	}
+}
+
+//´òÓ¡º¯Êý
+void PrintArray(int *array, int size)
+{
+	int i = 0;
+	for (; i < size; i++)
+	{
+		printf("%d ", array[i]);
+	}
+	printf("\n");
+}
+
+//½»»»º¯Êý
+void Swap(int *pLeft, int *pRight)
+{
+	int tmp = *pLeft;
+	*pLeft = *pRight;
+	*pRight = tmp;
+}
