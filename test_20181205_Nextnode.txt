@@ -1,0 +1,57 @@
+/*
+[编程题]二叉树的下一个结点
+
+给定一个二叉树和其中的一个结点，请找出中序遍历顺序的下一个结点并且返回。
+注意，树中的结点不仅包含左右子结点，同时包含指向父结点的指针。
+
+
+
+分析二叉树的下一个节点，一共有以下情况：
+    1.二叉树为空，则返回空；
+    2.节点右孩子存在，则设置一个指针从该节点的右孩子出发，
+       一直沿着指向左子结点的指针找到的叶子节点即为下一个节点；
+    3.节点右孩子不存在，则应当向上寻找当前节点的父节点中属于祖父节点的左子节点的那一个
+*/
+
+
+/*
+struct TreeLinkNode {
+    int val;
+    struct TreeLinkNode *left;
+    struct TreeLinkNode *right;
+    struct TreeLinkNode *next;
+    TreeLinkNode(int x) :val(x), left(NULL), right(NULL), next(NULL) {
+        
+    }
+};
+*/
+class Solution {
+public:
+    TreeLinkNode* GetNext(TreeLinkNode* pNode)
+    {
+        if (NULL == pNode)
+            return NULL;
+        
+        //当右子树存在则找其右子树下的最左端的叶子结点
+        if(pNode->right)
+        {
+            pNode = pNode->right;
+            while(pNode->left)
+                pNode = pNode->left;
+            return pNode;
+        }
+        
+        //当前结点的右子树不存在
+        else
+        {
+            TreeLinkNode* pParent = pNode->next;
+            while(pParent && pParent->right == pNode)
+            {
+                pNode = pParent;
+                pParent = pParent->next;
+            }
+            pNode = pParent;
+            return pNode;
+        }
+    }
+};
