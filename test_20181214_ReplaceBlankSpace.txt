@@ -1,0 +1,50 @@
+/*剑指offer---替换空格*/
+
+/*
+请实现一个函数，将一个字符串中的每个空格替换成“%20”。
+例如，当字符串为We Are Happy.则经过替换之后的字符串为We%20Are%20Happy。
+*/
+
+
+class Solution {
+public:
+        void replaceSpace(char *str,int length){
+        	int blankNumber = 0;//空格的数量
+        	int oldstringLen;//记录原字符串长度
+        	int newstringLen;//
+        	int p1, p2;
+        	//遍历原字符串，找出串长度及空格数量
+        	for(oldstringLen = 0; str[oldstringLen] != '\0'; oldstringLen++)
+        	{
+            	      if(str[oldstringLen] == ' ')
+                	blankNumber++;
+        	}
+        
+        	//求新字符串长度
+        	newstringLen = oldstringLen + blankNumber*2;//新串长度
+        
+        	if (newstringLen > length)
+            	              return;
+        	str[newstringLen] = '\0';//原字符串最后一个字符为'\0'
+        
+        	//设置两个指针分别p1  p2分别指向原字符串和新字符串的末尾位置
+        	p1 = oldstringLen-1;
+        	p2 = newstringLen-1;
+        
+        	while(p1 >= 0 && p2 > p1)//两指针相同时，跳出循环
+        	{
+            		//如果p1指向内容为空格，那么p2开始赋值"20%"
+            		if(str[p1] == ' ')
+            		{
+                		str[p2--] = '0';
+                		str[p2--] = '2';
+                		str[p2--] = '%';
+           	 	}
+            
+            		//如果p1指向内容不为空格，那么内容赋值给p2指向的位置
+            		else
+                		str[p2--] = str[p1];
+           	 p1--;//为了下一次执行
+        	}
+       }
+};
