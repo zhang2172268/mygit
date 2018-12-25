@@ -1,0 +1,41 @@
+/*调整数组顺序使奇数位于偶数前面*/
+/*题目描述：
+          输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有的奇数位于数组的前
+          半部分，所有的偶数位于数组的后半部分，并保证奇数和奇数，偶数和偶数之间的相对位置不变。
+*/
+
+
+
+class Solution {
+public:
+    void reOrderArray(vector<int> &array) {
+
+        //1.新开辟一个vector，先放奇数，后放偶数
+        /*vector<int> tmp;
+        for(auto x: array)
+        {
+            if((x&1) == 1)//数与1等于1为奇数
+                tmp.push_back(x);
+        }
+        
+        for(auto x: array)
+        {
+            if((x&1) == 0)//数与1等于0为偶数
+                tmp.push_back(x);
+        }
+        
+        array = tmp;*/
+        
+        //2.类似冒泡排序思想，如果时前偶后奇的情况交换
+        for(int i=0; i<array.size(); i++) 
+        {
+            for(int j=array.size(); j>i; j--) 
+            {
+                if((array[j]&1) && (array[j-1]&1)==0) 
+                {
+                    swap(array[j],array[j-1]);
+                }
+            }
+        }
+    }
+};
