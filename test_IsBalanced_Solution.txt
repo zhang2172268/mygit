@@ -1,0 +1,35 @@
+/* 平衡二叉树
+     
+     题目描述：
+            输入一棵二叉树，判断该二叉树是否是平衡二叉树。
+*/
+
+
+class Solution {
+public:
+/*
+    1、重复遍历结点
+    先求出根结点的左右子树的深度，然后判断它们的深度相差不超过1，如果否，则不是一棵二叉树；如果是，再用同样的方法分别判断左子树和右子树是否为平衡二叉树，如果都是，则这就是一棵平衡二叉树。
+但上面的方法在判断子树是否为平衡二叉树时，会重复遍历树的结点，不断地求子树的深度，所以效率不高。
+    2、遍历一遍结点
+    我们在遍历结点的同时记录下该结点的深度，这样就可以避免了重复访问。
+*/
+    bool IsBalanced_Solution(TreeNode* pRoot) {
+        if(pRoot==NULL)
+            return true;
+        int left=TreeDepth(pRoot->left);
+        int right=TreeDepth(pRoot->right);
+        int diff=left-right;
+        if(diff>1 || diff<-1)
+            return false;
+        return IsBalanced_Solution(pRoot->left) && IsBalanced_Solution(pRoot->right);
+    }
+     
+    int TreeDepth(TreeNode* pRoot){
+        if(pRoot==NULL)
+            return 0;
+        int left=TreeDepth(pRoot->left);
+        int right=TreeDepth(pRoot->right);
+        return left>right?(left+1):(right+1);
+    }
+};
