@@ -1,0 +1,29 @@
+/* 翻转单词顺序序列
+    
+    题目描述
+           牛客最近来了一个新员工Fish，每天早晨总是会拿着一本英文杂志，写些句子在本子上。
+同事Cat对Fish写的内容颇感兴趣，有一天他向Fish借来翻看，但却读不懂它的意思。例如，“student. a am I”。
+后来才意识到，这家伙原来把句子单词的顺序翻转了，正确的句子应该是“I am a student.”。
+Cat对一一的翻转这些单词顺序可不在行，你能帮助他么？
+*/
+
+class Solution {
+    //一个字符一个字符的处理，得到单词之后插入到结果字符串前面
+public:
+    string ReverseSentence(string str) {
+        string result,temp;
+        for(char ch:str) //一个字符一个字符的处理
+        {
+            if(ch == ' ')
+            {
+                result = ' ' + temp + result;//将每个单词放到前面(如果把这个看做数组，就是把temp插入到前面)
+                temp = ""; //置空
+            }
+            else
+                temp += ch; //构建单词
+        }
+       
+        if(temp.size()) result = temp + result; //补充最后一个单词到最前面
+        return result;
+    }
+};
