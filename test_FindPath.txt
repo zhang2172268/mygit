@@ -1,0 +1,38 @@
+/* 二叉树中和为某一值的路径
+
+    题目描述：
+           输入一颗二叉树的跟节点和一个整数，打印出二叉树中结点值的和为输入整数的所有路径。路径定义为从树
+的根结点开始往下一直到叶结点所经过的结点形成一条路径。(注意: 在返回值的list中，数组长度大的数组靠
+前)
+*/
+
+/*
+struct TreeNode {
+	int val;
+	struct TreeNode *left;
+	struct TreeNode *right;
+	TreeNode(int x) :
+			val(x), left(NULL), right(NULL) {
+	}
+};*/
+class Solution {
+public:
+    vector<vector<int> > FindPath(TreeNode* root,int expectNumber) {
+        vector<vector<int>> allRes;
+        vector<int> temp;
+        if (root)
+            dfsFind(root, expectNumber, allRes, temp);
+        return allRes;
+    }
+    
+    void dfsFind(TreeNode* root, int expectNumber, vector<vector<int>> &allRes, vector<int> &temp){  // 必须引用传值，这样的话可以改变allRes，不用返回值
+        temp.push_back(root->val);
+        if (root->val - expectNumber == 0 && !root->left && !root->right)
+        {
+            allRes.push_back(temp);
+        }
+        if (root->left) dfsFind(root->left, expectNumber - root->val, allRes, temp);
+        if (root->right) dfsFind(root->right, expectNumber - root->val, allRes, temp);
+        temp.pop_back(); //这一步很关键，要回退到上一层，具体举例子就可以理解
+    }
+};
