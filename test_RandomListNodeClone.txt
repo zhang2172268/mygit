@@ -1,0 +1,105 @@
+/* 复杂链表的复制
+
+    题目描述：
+           输入一个复杂链表（每个节点中有节点值，以及两个指针，一个指向下一个节点，另一个特殊指针指向任意
+一个节点），返回结果为复制后复杂链表的head。（注意，输出结果中请不要返回参数中的节点引用，否则判题程序会直接返回空）
+*/
+
+/*
+    三步法：
+          1.在旧链表中创建新链表，此时不处理新链表的兄弟结点
+          2.根据旧链表的兄弟结点，初始化新链表的兄弟结点
+          3.从旧链表中拆分得到新链表
+
+    哈希表法：
+           首先遍历原链表，创建新链表（赋值label和next），用哈希表关联对应结点；再遍历一原链表，更新新链表的random指针。
+
+*/
+
+
+/*
+struct RandomListNode {
+    int label;
+    struct RandomListNode *next, *random;
+    RandomListNode(int x) :
+            label(x), next(NULL), random(NULL) {
+    }
+};
+*/
+class Solution {
+public:
+    RandomListNode* Clone(RandomListNode* pHead)
+    {
+        
+//三步法
+/* 		if (!pHead)
+			return nullptr;
+ 
+		RandomListNode* pNode = pHead;
+		// 复制原始链表的任一节点并链接到该节点的后边
+		while (pNode)
+		{
+			RandomListNode* pTemp = new RandomListNode(pNode->label);
+			pTemp->next = pNode->next;
+			pNode->next = pTemp;
+ 
+			pNode = pTemp->next;
+		}
+	// 初始化复制节点的random关系
+		pNode = pHead;
+		while (pNode)
+		{
+			RandomListNode* pTemp = pNode->next;
+			if(pNode->random)
+				pTemp->random = pNode->random->next;
+ 
+			pNode = pTemp->next;
+		}
+		// 从链表中拆分出新链表
+		RandomListNode* pCopyHead = pHead->next;
+		RandomListNode* pCopyNode= pHead->next;
+		pNode = pHead;
+		while (pNode)
+		{
+			pNode->next = pCopyNode->next;
+			if(pNode->next)
+				pCopyNode->next = pNode->next->next;
+ 
+			pNode = pNode->next;
+			pCopyNode = pCopyNode->next;
+		}
+ 
+		return pCopyHead;
+*/
+        
+
+        
+//哈希表法
+		if (!pHead)
+			return nullptr;
+ 
+		map<RandomListNode*, RandomListNode*> nodeMap;
+ 
+		RandomListNode* pNode = pHead;
+		/* 创建结点 */
+		while (pNode)
+		{
+			RandomListNode* pTemp = new RandomListNode(pNode->label);
+			nodeMap[pNode] = pTemp;
+			pNode = pNode->next;
+		}
+ 
+		pNode = pHead;
+		/* 创建连接关系 */
+		while (pNode)
+		{
+			RandomListNode* pTemp = nodeMap[pNode];
+			pTemp->next = nodeMap[pNode->next];
+			pTemp->random = nodeMap[pNode->random];
+ 
+			pNode = pNode->next;
+		}
+ 
+		return nodeMap[pHead];
+    }
+};
