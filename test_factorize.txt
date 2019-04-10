@@ -1,0 +1,24 @@
+/* 分解因数
+
+    所谓因子分解，就是把给定的正整数a，分解成若干个素数的乘积，即 a = a1 × a2 × a3 × ... × an,并且 1 < a1 ≤ a2 ≤ a3 ≤ ... ≤ an。其中a1、a2、...、an均为素数。 先给出一个整数a，请输出分解后的因子。
+*/
+
+#include <iostream>
+#include <cmath>
+#include <cstdio>
+ 
+int main()
+{
+    unsigned int n;
+    while(std::cin >> n){
+        printf("%d =", n);
+        for(unsigned int i = 2; i <= std::sqrt(n); ++i){
+            while(n != i && n%i == 0){
+                printf(" %u *", i);
+                n = n/i;
+            }
+        }
+        printf(" %d\n", n);
+    }
+    return 0;
+}
